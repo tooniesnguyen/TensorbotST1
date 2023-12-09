@@ -64,7 +64,7 @@ class ChatDataset(Dataset):
         return self.n_samples
 
 def main():
-    json_dir = "/home/toonies/Learn/Tensorbot/models/dicts/intents.json"
+    json_dir = f"{WORK_DIR}/models/dicts/intents.json"
     data_process = Data_Preprocessing(json_dir)
     all_words, tags, _ =data_process.create_data()
     X_train, y_train = data_process.X_y_split()

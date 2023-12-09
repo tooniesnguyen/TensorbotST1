@@ -42,6 +42,8 @@ class Tensorbot:
         print("Load successful")
         return model
     
+        
+    
     def chat_mode(self):
         while True:
             sentence = input("You: ")
@@ -66,7 +68,37 @@ class Tensorbot:
                 print(f"{self.bot_name}: I do not understand...")
             
     def speech_mode(self):
-        pass
+        import speech_recognition as sr
+        recognizer = sr.Recognizer()
+        while True:
+            with sr.Microphone() as source:
+                print("Listening...")
+                audio = recognizer.listen(source, timeout = 5)
+            try:
+                sentence = recognizer.recognize_google(audio)
+                print("You said:", sentence)
+                sentence = self.word_process.tokenize(sentence)
+                X = self.word_process.bag_words(sentence, self.all_words)
+                X = X.reshape(1, X.shape[0])
+                X = torch.from_numpy(X).to(self.device)
+                
+                output = self.model(X)
+                _, predicted = torch.max(output, dim=1)
+
+                tag = self.tags[predicted.item()]
+                probs = torch.softmax(output, dim=1)
+                prob = probs[0][predicted.item()]
+                if prob.item() > 0.75:
+                    for intent in self.intents['intents']:
+                        if tag == intent["tag"]:
+                            print(f"{self.bot_name}: {random.choice(intent['responses'])}")
+                else:
+                    print(f"{self.bot_name}: I do not understand...")
+            except sr.UnknownValueError:
+                print("Sorry, I could not understand.")
+
+class controller_tensorbot:
+    pass
 
 
 if __name__ == "__main__":
