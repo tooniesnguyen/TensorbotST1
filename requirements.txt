@@ -1,2 +1,5 @@
-nltk
-PrettyTable
+nltk==3.8.1
+PrettyTable==3.9.0
+speechrecognition
+pyaudio
+# pyttsx3

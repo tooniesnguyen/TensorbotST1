@@ -8,14 +8,19 @@ import os
 from pathlib import Path
 import random
 
+HOST = socket.gethostbyname(socket.gethostname())
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[0]
+WORK_DIR = os.path.dirname(ROOT)
 
 
-class NLP_Robot:
+class Tensorbot:
     def __init__(self, json_path, model_path):
         self.intents = self.load_json(json_path)
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.word_process = Word_Processing()
         self.model = self.load_model(model_path)
+        self.bot_name = "Tensorbot"
 
     def load_json(self, json_path):
         with open(json_path, 'r') as json_data:
@@ -38,7 +43,6 @@ class NLP_Robot:
         return model
     
     def chat_mode(self):
-        bot_name = "Tensorbot"
         while True:
             sentence = input("You: ")
             if sentence == "quit":
@@ -57,22 +61,20 @@ class NLP_Robot:
             if prob.item() > 0.75:
                 for intent in self.intents['intents']:
                     if tag == intent["tag"]:
-                        print(f"{bot_name}: {random.choice(intent['responses'])}")
+                        print(f"{self.bot_name}: {random.choice(intent['responses'])}")
             else:
-                print(f"{bot_name}: I do not understand...")
+                print(f"{self.bot_name}: I do not understand...")
             
-
+    def speech_mode(self):
+        pass
 
 
 if __name__ == "__main__":
-    HOST = socket.gethostbyname(socket.gethostname())
-    FILE = Path(__file__).resolve()
-    ROOT = FILE.parents[0]
-    WORK_DIR = os.path.dirname(ROOT)
+
     
     JSON_DIR = f"{WORK_DIR}/Tensorbot/models/dicts/intents.json"
     MODEL_DIR = f"{WORK_DIR}/Tensorbot/models/best.pth"
 
-    nlp_robot = NLP_Robot(JSON_DIR, MODEL_DIR)
-    nlp_robot.chat_mode()
+    tensorbot = Tensorbot(JSON_DIR, MODEL_DIR)
+    tensorbot.chat_mode()
     
