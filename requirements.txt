@@ -1,5 +1,12 @@
 nltk==3.8.1
 PrettyTable==3.9.0
-speechrecognition
-pyaudio
+typing_extensions==4.8.0
+uvicorn == 0.23.2
+fastapi == 0.104.1
+pyrealsense2 == 2.54.2.5684
+numpy == 1.26.1
+opencv-python == 4.8.1.78
+
+# speechrecognition
+# pyaudio
 # pyttsx3
