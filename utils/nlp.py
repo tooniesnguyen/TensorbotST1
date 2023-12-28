@@ -13,9 +13,11 @@ FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]
 WORK_DIR = os.path.dirname(ROOT)
 
+JSON_DIR = f"{WORK_DIR}/Tensorbot/data/dicts/intents.json"
+MODEL_DIR = f"{WORK_DIR}/Tensorbot/models/best.pth"
 
 class Tensorbot:
-    def __init__(self, json_path, model_path):
+    def __init__(self, json_path = JSON_DIR, model_path = MODEL_DIR):
         self.intents = self.load_json(json_path)
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.word_process = Word_Processing()
@@ -103,10 +105,6 @@ class controller_tensorbot:
 
 if __name__ == "__main__":
 
-    
-    JSON_DIR = f"{WORK_DIR}/Tensorbot/models/dicts/intents.json"
-    MODEL_DIR = f"{WORK_DIR}/Tensorbot/models/best.pth"
-
-    tensorbot = Tensorbot(JSON_DIR, MODEL_DIR)
+    tensorbot = Tensorbot()
     tensorbot.chat_mode()
     

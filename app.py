@@ -6,15 +6,27 @@ from fastapi.responses import JSONResponse
 from multiprocessing import Pool
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import ssl
+import sys
+import socket
+import os
+from pathlib import Path
 
-app = FastAPI()
 
+HOST = socket.gethostbyname(socket.gethostname())
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[0]
+WORK_DIR = os.path.dirname(ROOT)
+print("WORK_DIR", WORK_DIR)
+
+
+app = FastAPI(ssl_keyfile=f'{WORK_DIR}/Tensorbot/keyfile.pem', ssl_certfile=f"{WORK_DIR}/Tensorbot/certfile.pem")
 
 # Mount the 'static' directory to serve static files
-app.mount("/static", StaticFiles(directory="/home/toonies/Learn/Tensorbot/static"), name="static")
+app.mount("/static", StaticFiles(directory=f"{WORK_DIR}/Tensorbot/static"), name="static")
 
 # Create an instance of Jinja2Templates and set the directory for templates
-templates = Jinja2Templates(directory="/home/toonies/Learn/Tensorbot/templates")
+templates = Jinja2Templates(directory= f"{WORK_DIR}/Tensorbot/templates")
 
 
 origins = [
@@ -47,17 +59,3 @@ if __name__ == "__main__":
     uvicorn.run("app:app", host="0.0.0.0", port=8000)
 
 
-
-# app = FLask(__name__)
-
-
-# @app.get("/")
-# def index_get():
-#     return render_template("base.html")
-
-# @app.post("/predict")
-# def predict():
-#     text = request.get_json().get("messenge")
-#     respone = get_respone(text)
-#     mess = {"answer": respone}
-#     return jsonify(messenge)

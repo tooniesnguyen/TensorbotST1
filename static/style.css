@@ -5,10 +5,13 @@
 }
 
 body {
+    background-image: url('https://ihoctienganh.com/public/files/upload/default/images/truong-dai-hoc-su-pham-ky-thuat-tp-hcm.jpg');
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    height: 100vh;
     font-family: 'Nunito', sans-serif;
-    font-weight: 400;
     font-size: 100%;
-    background: #F1F1F1;
 }
 
 *, html {
