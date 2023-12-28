@@ -22,10 +22,8 @@ print("WORK_DIR", WORK_DIR)
 
 app = FastAPI(ssl_keyfile=f'{WORK_DIR}/Tensorbot/keyfile.pem', ssl_certfile=f"{WORK_DIR}/Tensorbot/certfile.pem")
 
-# Mount the 'static' directory to serve static files
 app.mount("/static", StaticFiles(directory=f"{WORK_DIR}/Tensorbot/static"), name="static")
 
-# Create an instance of Jinja2Templates and set the directory for templates
 templates = Jinja2Templates(directory= f"{WORK_DIR}/Tensorbot/templates")
 
 
@@ -36,7 +34,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Adjust this to your specific frontend's origin
+    allow_origins=origins,  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,7 +44,6 @@ class Message(BaseModel):
 
 @app.get("/")
 async def root(request: Request):
-    # Render the HTML template using Jinja2Templates
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/predict")
