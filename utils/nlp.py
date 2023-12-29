@@ -1,5 +1,5 @@
-from utils.preprocess import Word_Processing
-from utils.model import Lstm_Model
+from .preprocess import Word_Processing
+from .model import Lstm_Model
 import torch
 import json
 import sys
@@ -7,14 +7,24 @@ import socket
 import os
 from pathlib import Path
 import random
+import time
 
 HOST = socket.gethostbyname(socket.gethostname())
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]
 WORK_DIR = os.path.dirname(ROOT)
 
-JSON_DIR = f"{WORK_DIR}/Tensorbot/data/dicts/intents.json"
-MODEL_DIR = f"{WORK_DIR}/Tensorbot/models/best.pth"
+JSON_DIR = f"{WORK_DIR}/data/dicts/intents.json"
+MODEL_DIR = f"{WORK_DIR}/models/best.pth"
+
+
+def time_complexity(func):
+    def warp(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        print(f'Time inference func {func.__name__}: {(time.time() - start):.3f} second')
+        return result
+    return warp
 
 class Tensorbot:
     def __init__(self, json_path = JSON_DIR, model_path = MODEL_DIR):
@@ -44,8 +54,30 @@ class Tensorbot:
         print("Load successful")
         return model
     
+    # @time_complexity
+    def feed_back(self, sentence):
+        sentence = self.word_process.tokenize(sentence)
+        X = self.word_process.bag_words(sentence, self.all_words)
+        X = X.reshape(1, X.shape[0])
+        X = torch.from_numpy(X).to(self.device)
         
+        output = self.model(X)
+        _, predicted = torch.max(output, dim = 1)
+
+        tag = self.tags[predicted.item()]
+        probs = torch.softmax(output, dim=1)
+        prob = probs[0][predicted.item()]
+        if prob.item() > 0.75:
+            for intent in self.intents['intents']:
+                if tag == intent["tag"]:
+                    text = random.choice(intent['responses'])
+        else:
+            text = "I do not understand you"
+            
+        return text, tag
+
     
+
     def chat_mode(self):
         while True:
             sentence = input("You: ")
@@ -106,5 +138,5 @@ class controller_tensorbot:
 if __name__ == "__main__":
 
     tensorbot = Tensorbot()
-    tensorbot.chat_mode()
-    
+    # tensorbot.chat_mode()
+    print(tensorbot.feed_back("Hello"))

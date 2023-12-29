@@ -6,42 +6,41 @@ from fastapi.responses import JSONResponse
 from multiprocessing import Pool
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from utils.nlp import Tensorbot
+from utils.controller import OriginPathFollow
+from utils.conn_db import get_list_target
 import ssl
 import sys
 import socket
 import os
 from pathlib import Path
+import numpy as np
+import re
 
 
 HOST = socket.gethostbyname(socket.gethostname())
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]
 WORK_DIR = os.path.dirname(ROOT)
-print("WORK_DIR", WORK_DIR)
 
+PATTERN = get_list_target()
 
-app = FastAPI(ssl_keyfile=f'{WORK_DIR}/Tensorbot/keyfile.pem', ssl_certfile=f"{WORK_DIR}/Tensorbot/certfile.pem")
-
+app = FastAPI()
 app.mount("/static", StaticFiles(directory=f"{WORK_DIR}/Tensorbot/static"), name="static")
-
 templates = Jinja2Templates(directory= f"{WORK_DIR}/Tensorbot/templates")
+tensorbot = Tensorbot()
 
-
-origins = [
-    "https://localhost",
-    "https://localhost:8000"
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  
+    allow_origins=['*'],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 class Message(BaseModel):
     message: str
-
+    
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -49,10 +48,16 @@ async def root(request: Request):
 @app.post("/predict")
 async def predict(message: Message):
     text = message.message
-    response = text
+    response, tag = tensorbot.feed_back(text)
+    if tag == "moving":
+        target = re.findall(PATTERN, text)
+        # path1 = np.array([[0,0],[0.5,0],[1,0.5],[2,-0.2],[3,0],[0,0]])
+        # OriginPathFollow(path1, 4)
+        if target:
+            print(target[0])
     return JSONResponse(content={"answer": response})
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000)
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True, workers=Pool()._processes)
 
 

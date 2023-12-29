@@ -69,6 +69,19 @@
       ]
     },
     {
+      "tag": "moving",
+      "patterns": [
+        "Can you take me to Mr. Quang's room?",
+        "Can you take me to E1306?",
+        "I want to meet Mr. Quang"
+      ],
+      "responses":[
+        "Oke, let me help you"
+      ]
+
+
+    },
+    {
       "tag": "funny",
       "patterns": [
         "Tell me a joke!",

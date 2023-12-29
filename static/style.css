@@ -5,7 +5,7 @@
 }
 
 body {
-    background-image: url('https://ihoctienganh.com/public/files/upload/default/images/truong-dai-hoc-su-pham-ky-thuat-tp-hcm.jpg');
+    background-image: url('./images/bg.jpeg');
     background-size: cover;
     background-position: center;
     margin: 0;
@@ -15,8 +15,8 @@ body {
 }
 
 *, html {
-    --primaryGradient: linear-gradient(93.12deg, #106abe 0.52%, #4796c4 100%);
-    --secondaryGradient: linear-gradient(268.91deg, #196bb8 -2.14%, #4e9ab1 99.69%);
+    --primaryGradient: linear-gradient(93.12deg, #0064c8 0.52%, #00a9d4 100%);
+    --secondaryGradient: linear-gradient(268.91deg, #0064c8 -2.14%, #00a9d4 99.69%);
     --primaryBoxShadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
     --secondaryBoxShadow: 0px -10px 15px rgba(0, 0, 0, 0.1);
     --primary: #2a72ad;
@@ -47,6 +47,7 @@ body {
     transform: translateY(-40px);
     z-index: 123456;
     opacity: 1;
+    border-radius: 10px;
 
 }
 
