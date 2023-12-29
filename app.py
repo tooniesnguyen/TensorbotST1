@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils.nlp import Tensorbot
 from utils.controller import OriginPathFollow
-from utils.conn_db import get_list_target
+from utils.conn_db import get_list_target, retrieval_coordinates
 import ssl
 import sys
 import socket
@@ -16,7 +16,6 @@ import os
 from pathlib import Path
 import numpy as np
 import re
-
 
 HOST = socket.gethostbyname(socket.gethostname())
 FILE = Path(__file__).resolve()
@@ -50,11 +49,15 @@ async def predict(message: Message):
     text = message.message
     response, tag = tensorbot.feed_back(text)
     if tag == "moving":
-        target = re.findall(PATTERN, text)
+        target = re.findall(PATTERN, text.lower())
+        print(target)
         # path1 = np.array([[0,0],[0.5,0],[1,0.5],[2,-0.2],[3,0],[0,0]])
         # OriginPathFollow(path1, 4)
         if target:
-            print(target[0])
+            print("#################", type(retrieval_coordinates(target[0])) )
+            if retrieval_coordinates(target[0]) == [1,2]:
+                print("Running to Triet room")
+                # OriginPathFollow()
     return JSONResponse(content={"answer": response})
 
 if __name__ == "__main__":

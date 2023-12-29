@@ -22,17 +22,17 @@ def connect_sql(func):
 
 
 @connect_sql
-def retrieve_coordinates(cursor, target_to_retrieve):
+def retrieval_coordinates(cursor, target_to_retrieve):
     query = "SELECT coordinate FROM target_dict WHERE target = %s"
     cursor.execute(query, (target_to_retrieve,))
     result = cursor.fetchone()
-
+    coordinates_list = None
     if result:
-        coordinates_list = eval(result[0])
-        print(f"Coordinates for {target_to_retrieve}: {coordinates_list}")
-    else:
-        print(f"No coordinates found for {target_to_retrieve}")
-
+        coordinates_list = eval(result.get('coordinate', '[]')) 
+        # print(f"Coordinates for {target_to_retrieve}: {type(coordinates_list[0])}")
+    # else:
+    #     print(f"No coordinates found for {target_to_retrieve}")
+    return coordinates_list
 @connect_sql
 def get_list_target(cursor):
     query = "SELECT target FROM target_dict WHERE target != \"Block\" "
@@ -44,6 +44,7 @@ def get_list_target(cursor):
 
 
 if __name__ == "__main__":
-    get_list_target()
+    # get_list_target()
+    retrieval_coordinates("triet")
 
 
