@@ -79,7 +79,7 @@ def simulation( width= WIDTH, rows = ROWS):
                             spot.update_neighbors(grid)
 
                     arr_path_finding = algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
-                    print("Sucessful", arr_path_finding)
+                    # print("Sucessful", arr_path_finding)
 
                 if event.key == pygame.K_c:
                     start = None
@@ -144,8 +144,9 @@ def Astar_search(current_coor, target_coor, rows = ROWS, show_mode = 0, width = 
             spot.update_neighbors(grid)
 
     arr_path_finding = algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
-    print("Sucessful", arr_path_finding)
+    # print("Sucessful", arr_path_finding)
     pygame.quit()
+    return arr_path_finding
 
 
 if __name__ == "__main__":

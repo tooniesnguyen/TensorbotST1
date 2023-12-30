@@ -6,7 +6,7 @@ import math
 import signal
 import numpy as np
 
-ROBOTINOIP = "192.168.0.122"
+ROBOTINOIP = "192.168.0.106"
 PARAMS = {'sid':'example_circle'}
 run = True
 
@@ -141,7 +141,7 @@ def opstacleAvoid( CurrQuad):
         return 0
         
     for i in range(len(HeadingDis)):
-        if HeadingDis[i] < 0.3: 
+        if HeadingDis[i] < 0.15: 
             Opsticle = 1
             break
         else :
@@ -155,9 +155,9 @@ path1 = np.array([[0,0],[0.5,0],[1,0.5],[2,-0.2],[3,0],[0,0]])
 
 
 
-def pure_pursuit_step (path, currentPos, lookAheadDis, LFindex) :
-    currentHeading = 330
-    lookAheadDis = 0.35
+def pure_pursuit_step (path, currentPos, lookAheadDis, LFindex,LastgoalPt) :
+    # goalPt = [0,0]
+    goalPt = LastgoalPt
     #Đầu tiên là chúng ta sẽ lấy giá trị hiện tại của robot về để tính toán 
     currentX = currentPos[0]
     currentY = currentPos[1]
@@ -184,7 +184,6 @@ def pure_pursuit_step (path, currentPos, lookAheadDis, LFindex) :
         # discriminant < 0 không cắt
         # discriminant = 0 tiếp tuyến
         discriminant = (lookAheadDis**2) * (dr**2) - D**2
-
         # Đoạn code tìm điểm cắt 
         if discriminant >= 0:
             # Tìm các điểm cắt trên đường thẳng
@@ -216,12 +215,12 @@ def pure_pursuit_step (path, currentPos, lookAheadDis, LFindex) :
 
                 # TH 1 : Nếu cả hai điểm ở trong đều ở trong khoảng điểm :
                 if (
-                (minX <= sol_pt1[0] <= maxX and minY <= sol_pt1[1] <= maxY) 
+                ((minX <= sol_pt1[0] <= maxX and minY <= sol_pt1[1] <= maxY) 
                 or (equalCompare(sol_pt1[0],minX) == 1 or equalCompare(sol_pt1[0],maxX) == 1 
-                or equalCompare(sol_pt1[1],minY) == 1 or equalCompare(sol_pt1[1],maxY) == 1) 
-                and (minX <= sol_pt2[0] <= maxX and minY <= sol_pt2[1] <= maxY) 
+                or equalCompare(sol_pt1[1],minY) == 1 or equalCompare(sol_pt1[1],maxY) == 1)) 
+                and ((minX <= sol_pt2[0] <= maxX and minY <= sol_pt2[1] <= maxY) 
                 or (equalCompare(sol_pt2[0],minX) == 1 or equalCompare(sol_pt2[0],maxX) == 1 
-                or equalCompare(sol_pt2[1],minY) == 1 or equalCompare(sol_pt2[1],maxY) == 1)) :# Chúng ta sẽ kiểm tra xem điểm nào gần điểm tiếp theo cần đến trong quỷ đạo hơn :
+                or equalCompare(sol_pt2[1],minY) == 1 or equalCompare(sol_pt2[1],maxY) == 1))) :# Chúng ta sẽ kiểm tra xem điểm nào gần điểm tiếp theo cần đến trong quỷ đạo hơn :
                     if pt_to_pt_distance(sol_pt1, path[i+1]) < pt_to_pt_distance(sol_pt2, path[i+1]):
                         goalPt = sol_pt1
                     else:
@@ -244,53 +243,59 @@ def pure_pursuit_step (path, currentPos, lookAheadDis, LFindex) :
                     lastFoundIndex = i
                     break
                 else :
-                    # if lastFoundIndex == path1.shape(1)-2:
-                    #     goalPt = [path[lastFoundIndex+1][0], path[lastFoundIndex+1][1]]
-                    # Trường hợp là vị trí setpoint xa hơn vị trí robot:
-                    # index + lên một để set đến đoạn đường tiếp theo và tránh việc robot đi ngược lại
                     lastFoundIndex = i+1
+                    # if (lastFoundIndex == len(path -1)):
+                    #     goalPt = [path[lastFoundIndex][0], path[lastFoundIndex][1]]
+                    #     break
             # Nếu không có điểm nào cắt :
             else :
                 foundIntersection = False
                 goalPt = [path[lastFoundIndex][0], path[lastFoundIndex][1]]
+
+    # goalPt.append(path[lastFoundIndex][2])
     
     return goalPt,lastFoundIndex
-
+    
 
 def init():
     #Khai báo thông số Robot :
-    global currentPos,currentHeading,lastFoundIndex,lookAheadDis
-    currentHeading = 330
-    lookAheadDis = 0.35
+    global currentPos,lastFoundIndex,lookAheadDis
     lastFoundIndex = 0
     currentPos = [0, 0]
     lastFoundIndex = 0
+    lookAheadDis = 0.15
 
     #Khai báo cờ phục vụ việc dừng robot :
-    global msecsElapsed,goaltheta,msecStop,WaitFlag,StopFlag,EndFlag,DemonStrateFlag
+    global msecsElapsed,goaltheta,msecStop,WaitFlag,StopFlag,EndFlag,DemonStrateFlag,msecDemon
     msecsElapsed = 0 
     goaltheta = 0
     msecStop= 0
     WaitFlag = 0
     StopFlag = 0
     EndFlag = 0
+    msecDemon = 0
     DemonStrateFlag = 0
     
     #Khai báo thông số robot :
-    global vec,pidX,pidY,pidTheta
+    global vec,pidX,pidY,pidTheta,goalPt
     vec = [0,0,0]
-    pidX = PID(1,0.5,-0.5)
-    pidY = PID(1,0.5,-0.5)
-    pidTheta = PID(0.03,0.3,-0.3) 
-
+    pidX = PID(1.5,0.6,-0.6)
+    pidY = PID(1.5,0.6,-0.6)
+    pidTheta = PID(0.05,0.3,-0.3) 
+    goalPt = [0,0]
     
-def OriginPathFollow(pathDesiried,Index):
-    global msecsElapsed,goaltheta,msecStop,WaitFlag,StopFlag,EndFlag,DemonStrateFlag
-    global currentPos,currentHeading,lastFoundIndex,lookAheadDis
-    global vec,pidX,pidY,pidTheta
+def PathFollowing(data):
+    global msecsElapsed,goaltheta,msecStop,msecDemon,WaitFlag,StopFlag,EndFlag,DemonStrateFlag
+    global currentPos,lastFoundIndex,lookAheadDis,goalPt,pathOdering
+    global vec,pidX,pidY,pidTheta,goalPt
     try:
+        Dataout = np.array(data)
+        Dataout[:, 1] = -Dataout[:, 1]
+        pathDesiried = Dataout.astype(float)
+        pathDesiried*=0.4
+        
         signal.signal(signal.SIGINT, signal_handler)
-        init()
+        init()     
         while False == bumper() and True == run:
             # Đọc ví trí robot từ bộ đo đường 
             OdoX = OdometryRead()[0] 
@@ -299,30 +304,35 @@ def OriginPathFollow(pathDesiried,Index):
 
             # Cập nhật vị trí robot để đưa vào tính toán 
             currentPos = [OdoX,OdoY]
-            goalPt,lastFoundIndex = pure_pursuit_step (pathDesiried, currentPos, lookAheadDis, lastFoundIndex)
-
+            goalPt,lastFoundIndex = pure_pursuit_step (pathDesiried, currentPos, lookAheadDis, lastFoundIndex,goalPt)
+            print(goalPt)
 
             # Đưa thông số vào bộ PID để tính toán cho robot chạy bám theo quỷ đạo 
             u = pidX.PidCal(goalPt[0],OdoX)
             v = pidY.PidCal(goalPt[1],OdoY)
-
+            goaltheta = 0
+            
+            
             # Sử dụng ma trận xoay để robot chạy xoay trên một đường thẳng 
             uControl = (math.cos(-OdoR)*u - math.sin(-OdoR)*v)
             vControl = (math.sin(-OdoR)*u + math.cos(-OdoR)*v)
             MoveFlag = opstacleAvoid( QuadRantCheck(uControl,vControl))
-
-            #Xử lý chu trình robot khi đi đến nơi hoặc kết thúc chu trình 
-            if (lastFoundIndex == Index)and(WaitFlag == 0):
-                # StopFlag = 1
-                WaitFlag = 1
-                DemonStrateFlag = 1
-                msecStop = msecsElapsed
+            
                 
-            if (lastFoundIndex == pathDesiried.shape[0]-1):
-                msecStop = msecsElapsed
-                if ((goalPt[0] - OdoX)<0.01 and (goalPt[1] - OdoY)<0.01 and (goaltheta - OdoR*180/math.pi)<0.01):
-                    if msecsElapsed - msecStop > 1000 :
-                        break
+            if (lastFoundIndex == len(pathDesiried)-1):
+                # print([msecStop,msecsElapsed,EndFlag])
+                goalPt = pathDesiried[len(pathDesiried)-1]
+                if (abs(goalPt[0] - OdoX)<0.05 and abs(goalPt[1] - OdoY)<0.05 ):
+                    if EndFlag == 0:
+                        EndFlag = 1 
+                else :
+                    EndFlag = 0
+                    msecStop = msecsElapsed
+                    
+            if (msecsElapsed - msecStop > 1000) and EndFlag == 1 :
+                break
+
+            
             # Đưa độ lớn của 3 vector tính toán được vào mảng để điều khiển robot 
             if (MoveFlag == 0):
                 vec[0] = uControl
@@ -338,70 +348,126 @@ def OriginPathFollow(pathDesiried,Index):
                 vec[2] = 0
                 if (msecsElapsed - msecStop > 1000):
                     StopFlag = 0
-                    
-            if DemonStrateFlag == 1 :
-                vec[0] = 0
-                vec[1] = 0
-                vec[2] = 1
-                if (msecsElapsed - msecStop > 2000):
-                    DemonStrateFlag = 0
-            
-
-            # Hiển thị thông số để kiểm tra robot 
-            # display[0] = OdoX
-            # display[1] = OdoY
-            # display[2] = OdoR*180/math.pi
-            # print(display)
-            # print(goalPt)
 
             # Thời gian lấy mẫu
             time.sleep(0.05)
             msecsElapsed += 50
             
             set_vel(vec)
+        pathOdering  = np.array([[0,0]])
         set_vel([0,0,0])
     except Exception as e:
         print(e)
         return 1
     return 0
-def backhome():
+    
+def init():
+    #Khai báo thông số Robot :
+    global currentPos,lastFoundIndex,lookAheadDis
+    lastFoundIndex = 0
+    currentPos = [0, 0]
+    lastFoundIndex = 0
+    lookAheadDis = 0.15
+
+    #Khai báo cờ phục vụ việc dừng robot :
+    global msecsElapsed,goaltheta,msecStop,WaitFlag,StopFlag,EndFlag,DemonStrateFlag,msecDemon
+    msecsElapsed = 0 
+    goaltheta = 0
+    msecStop= 0
+    WaitFlag = 0
+    StopFlag = 0
+    EndFlag = 0
+    msecDemon = 0
+    DemonStrateFlag = 0
+    
+    #Khai báo thông số robot :
+    global vec,pidX,pidY,pidTheta,goalPt
+    vec = [0,0,0]
+    pidX = PID(1.5,0.6,-0.6)
+    pidY = PID(1.5,0.6,-0.6)
+    pidTheta = PID(0.05,0.3,-0.3) 
+    goalPt = [0,0]
+    
+def PathFollowing(data):
+    global msecsElapsed,goaltheta,msecStop,msecDemon,WaitFlag,StopFlag,EndFlag,DemonStrateFlag
+    global currentPos,lastFoundIndex,lookAheadDis,goalPt,pathOdering
+    global vec,pidX,pidY,pidTheta,goalPt
     try:
-        signal.signal(signal.SIGINT, signal_handler)
-        init()
+        Dataout = np.array(data)
+        Dataout[:, 1] = -Dataout[:, 1]
+        pathDesiried = Dataout.astype(float)
+        pathDesiried*=0.4
         
+        signal.signal(signal.SIGINT, signal_handler)
+        init()     
         while False == bumper() and True == run:
-            global msecsElapsed,goaltheta,msecStop,WaitFlag,StopFlag,EndFlag,DemonStrateFlag
-            global currentPos,currentHeading,lastFoundIndex,lookAheadDis
-            global vec,pidX,pidY,pidTheta
             # Đọc ví trí robot từ bộ đo đường 
             OdoX = OdometryRead()[0] 
             OdoY = OdometryRead()[1] 
             OdoR = OdometryRead()[2]
-            # Cập nhật vị trí robot để đưa vào tính toán 
-            # Đưa thông số vào bộ PID để tính toán cho robot chạy bám theo quỷ đạo 
-            u = pidX.PidCal(0,OdoX)
-            v = pidY.PidCal(0,OdoY)
 
+            # Cập nhật vị trí robot để đưa vào tính toán 
+            currentPos = [OdoX,OdoY]
+            goalPt,lastFoundIndex = pure_pursuit_step (pathDesiried, currentPos, lookAheadDis, lastFoundIndex,goalPt)
+            print(goalPt)
+
+            # Đưa thông số vào bộ PID để tính toán cho robot chạy bám theo quỷ đạo 
+            u = pidX.PidCal(goalPt[0],OdoX)
+            v = pidY.PidCal(goalPt[1],OdoY)
+            goaltheta = 0
+            
+            
             # Sử dụng ma trận xoay để robot chạy xoay trên một đường thẳng 
             uControl = (math.cos(-OdoR)*u - math.sin(-OdoR)*v)
             vControl = (math.sin(-OdoR)*u + math.cos(-OdoR)*v)
-
-            vec[0] = uControl
-            vec[1] = vControl
-            vec[2] = pidTheta.PidCal(0,OdoR*180/math.pi)
+            MoveFlag = opstacleAvoid( QuadRantCheck(uControl,vControl))
             
+                
+            if (lastFoundIndex == len(pathDesiried)-1):
+                # print([msecStop,msecsElapsed,EndFlag])
+                goalPt = pathDesiried[len(pathDesiried)-1]
+                if (abs(goalPt[0] - OdoX)<0.05 and abs(goalPt[1] - OdoY)<0.05 ):
+                    if EndFlag == 0:
+                        EndFlag = 1 
+                else :
+                    EndFlag = 0
+                    msecStop = msecsElapsed
+                    
+            if (msecsElapsed - msecStop > 1000) and EndFlag == 1 :
+                break
+
+            
+            # Đưa độ lớn của 3 vector tính toán được vào mảng để điều khiển robot 
+            if (MoveFlag == 0):
+                vec[0] = uControl
+                vec[1] = vControl
+                vec[2] = pidTheta.PidCal(goaltheta,OdoR*180/math.pi)
+            else :
+                StopFlag = 1
+                msecStop = msecsElapsed
+            
+            if StopFlag == 1 :
+                vec[0] = 0
+                vec[1] = 0
+                vec[2] = 0
+                if (msecsElapsed - msecStop > 1000):
+                    StopFlag = 0
+
             # Thời gian lấy mẫu
             time.sleep(0.05)
             msecsElapsed += 50
+            
             set_vel(vec)
+        pathOdering  = np.array([[0,0]])
         set_vel([0,0,0])
     except Exception as e:
         print(e)
         return 1
     return 0
 
+
 if __name__ == "__main__":
     # OriginPathFollow()
-    OriginPathFollow(path1,4)
+    # OriginPathFollow(path1,4)
     # backhome()
     print("Task Finished")

@@ -7,7 +7,7 @@ from multiprocessing import Pool
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils.nlp import Tensorbot
-from utils.controller import OriginPathFollow
+from utils.controller import PathFollowing
 from utils.conn_db import get_list_target, retrieval_coordinates
 from utils.search_algorithm import search_func
 import ssl
@@ -58,13 +58,11 @@ async def predict(message: Message):
             print("#################", type(retrieval_coordinates(target[0])) )
             target_point = retrieval_coordinates(target[0])
             path_to_running = search_func.Astar_search(current_point,target_point)
-            print(path_to_running)
+            print("Path to running",path_to_running)
 
-            running_flag = 1
-            # while running_flag:
-            #     print("Running OriginPathFollow")
 
-            # OriginPathFollow()
+
+            PathFollowing(path_to_running)
     return JSONResponse(content={"answer": response})
 
 if __name__ == "__main__":
