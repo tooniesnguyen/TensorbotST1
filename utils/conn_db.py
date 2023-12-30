@@ -13,6 +13,7 @@ def connect_sql(func):
         try:
             cursor = conn.cursor(dictionary=True)
             result = func(cursor, *args, **kwargs)
+            conn.commit()
             return result
 
         finally:
@@ -20,6 +21,16 @@ def connect_sql(func):
             conn.close()
     return wrap
 
+
+
+@connect_sql
+def get_list_target(cursor):
+    query = "SELECT target FROM target_dict WHERE target != \"Block\" "
+    cursor.execute(query)
+    result = cursor.fetchall()
+    targets =  [row['target'].lower() for row in result]
+    list_target = str("|".join(targets))
+    return list_target
 
 @connect_sql
 def retrieval_coordinates(cursor, target_to_retrieve):
@@ -33,18 +44,17 @@ def retrieval_coordinates(cursor, target_to_retrieve):
     # else:
     #     print(f"No coordinates found for {target_to_retrieve}")
     return coordinates_list
+
 @connect_sql
-def get_list_target(cursor):
-    query = "SELECT target FROM target_dict WHERE target != \"Block\" "
-    cursor.execute(query)
-    result = cursor.fetchall()
-    targets =  [row['target'].lower() for row in result]
-    list_target = str("|".join(targets))
-    return list_target
+def update_target_coordinates(cursor, target, new_coordinates):
+    query = "UPDATE target_dict SET coordinate = %s WHERE target = %s;"
+    cursor.execute(query, (str(new_coordinates), target))
+    print("Update sucessful")
+
 
 
 if __name__ == "__main__":
-    # get_list_target()
-    retrieval_coordinates("triet")
-
+    # print(get_list_target())
+    update_target_coordinates("Quang", [4,10])
+    # print(retrieval_coordinates("Quang")[1])
 

@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from utils.nlp import Tensorbot
 from utils.controller import OriginPathFollow
 from utils.conn_db import get_list_target, retrieval_coordinates
+from utils.search_algorithm import search_func
 import ssl
 import sys
 import socket
@@ -49,15 +50,21 @@ async def predict(message: Message):
     text = message.message
     response, tag = tensorbot.feed_back(text)
     if tag == "moving":
+        current_point = retrieval_coordinates("tensorbot")
         target = re.findall(PATTERN, text.lower())
-        print(target)
         # path1 = np.array([[0,0],[0.5,0],[1,0.5],[2,-0.2],[3,0],[0,0]])
         # OriginPathFollow(path1, 4)
         if target:
             print("#################", type(retrieval_coordinates(target[0])) )
-            if retrieval_coordinates(target[0]) == [1,2]:
-                print("Running to Triet room")
-                # OriginPathFollow()
+            target_point = retrieval_coordinates(target[0])
+            path_to_running = search_func.Astar_search(current_point,target_point)
+            print(path_to_running)
+
+            running_flag = 1
+            # while running_flag:
+            #     print("Running OriginPathFollow")
+
+            # OriginPathFollow()
     return JSONResponse(content={"answer": response})
 
 if __name__ == "__main__":
