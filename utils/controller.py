@@ -462,7 +462,7 @@ def PathFollowing(data):
         set_vel([0,0,0])
     except Exception as e:
         print(e)
-        return 1
+        yield 1
     return 0
 
 

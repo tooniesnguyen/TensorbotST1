@@ -124,7 +124,7 @@ def collect_barrier(show_mode=1, width=WIDTH, rows =  ROWS):
                 if event.key == pygame.K_c:
                     grid = make_grid(ROWS, width)
 
-def Astar_search(current_coor, target_coor, rows = ROWS, show_mode = 0, width = WIDTH):
+def Astar_search(current_coor, target_coor, barrier_arr, rows = ROWS, show_mode = 0, width = WIDTH):
     if show_mode:
         win = pygame.display.set_mode((WIDTH, WIDTH))
     else:
@@ -135,8 +135,7 @@ def Astar_search(current_coor, target_coor, rows = ROWS, show_mode = 0, width = 
     start.make_start()
     end = grid[target_coor[0]][target_coor[1]]
     end.make_end()
-    barrier_from_txt = read_txt_file()
-    for temp_data in barrier_from_txt:
+    for temp_data in barrier_arr:
         spot = grid[temp_data[0]][temp_data[1]]
         spot.make_barrier()
     for row in grid:
@@ -144,13 +143,16 @@ def Astar_search(current_coor, target_coor, rows = ROWS, show_mode = 0, width = 
             spot.update_neighbors(grid)
 
     arr_path_finding = algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
+    arr_path_finding.append(tuple(target_coor))
     # print("Sucessful", arr_path_finding)
     pygame.quit()
     return arr_path_finding
 
 
 if __name__ == "__main__":
+    barrier_from_txt = read_txt_file()
+
     # collect_barrier()
     # simulation()
-    Astar_search([0,0], [3,6])
+    print(Astar_search([0,0], [3,8],barrier_from_txt))
     # print(WORK_DIR)

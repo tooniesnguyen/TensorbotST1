@@ -268,7 +268,6 @@ def main(win, width, barrier_file = barrier_file, rows = ROWS):
                     start = None
                     end = None
                     grid = make_grid(rows, width)
-
     pygame.quit()
 
 if __name__ == "__main__":
