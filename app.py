@@ -8,9 +8,9 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils.search_algorithm import search_func, search
 from utils.nlp import Tensorbot
-# from utils.controller import PathFollowing
+from utils.controller import PathFollowing2
 from utils.conn_db import *
-from utils.sim_client import PathFollowing
+# from utils.sim_client import PathFollowing
 import ssl
 import sys
 import socket
@@ -91,7 +91,7 @@ async def predict(message: Message):
             while current_point != target_point:
                 path_to_running = search_func.Astar_search(current_point,target_point,barrier_arr)
                 print("Path to running", path_to_running)
-                check_return = PathFollowing(path_to_running) # retu 2D
+                check_return = PathFollowing2(path_to_running) # retu 2D
                 if len(check_return)>= 2:
                     barrier_arr.extend(barrier_i for barrier_i in check_return[1:] if barrier_i not in barrier_arr)
                     print("Update barrier", len(barrier_arr))

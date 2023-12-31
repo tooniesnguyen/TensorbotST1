@@ -5,6 +5,7 @@ import time
 import math
 import signal
 import numpy as np
+from .conn_db import *
 
 ROBOTINOIP = "192.168.0.106"
 PARAMS = {'sid':'example_circle'}
@@ -152,7 +153,58 @@ path1 = np.array([[0,0],[0.5,0],[1,0.5],[2,-0.2],[3,0],[0,0]])
 # path1 = np.array([[0,0],[0.5,0.5],[0,1],[-1,0],[0,-1],[0.5,-0.5],[0,0]])
 #path1 = [[0.0, 0.0], [0.571194595265405, -0.4277145118491421], [1.1417537280142898, -0.8531042347260006], [1.7098876452457967, -1.2696346390611464], [2.2705328851607995, -1.6588899151216996], [2.8121159420106827, -1.9791445882187304], [3.314589274316711, -2.159795566252656], [3.7538316863009027, -2.1224619985315876], [4.112485112342358, -1.8323249172947023], [4.383456805594431, -1.3292669972090994], [4.557386228943757, -0.6928302521681386], [4.617455513800438, 0.00274597627737883], [4.55408382321606, 0.6984486966257434], [4.376054025556597, 1.3330664239172116], [4.096280073621794, 1.827159263675668], [3.719737492364894, 2.097949296701878], [3.25277928312066, 2.108933125822431], [2.7154386886417314, 1.9004760368018616], [2.1347012144725985, 1.552342808106984], [1.5324590525923942, 1.134035376721349], [0.9214084611203568, 0.6867933269918683], [0.30732366808208345, 0.22955002391894264], [-0.3075127599907512, -0.2301742560363831], [-0.9218413719658775, -0.6882173194028102], [-1.5334674079795052, -1.1373288016589413], [-2.1365993767877467, -1.5584414896876835], [-2.7180981380280307, -1.9086314914221845], [-3.2552809639439704, -2.1153141204181285], [-3.721102967810494, -2.0979137913841046], [-4.096907306768644, -1.8206318841755131], [-4.377088212533404, -1.324440752295139], [-4.555249804461285, -0.6910016662308593], [-4.617336323713965, 0.003734984720118972], [-4.555948690867849, 0.7001491248072772], [-4.382109193278264, 1.3376838311365633], [-4.111620918085742, 1.8386823176628544], [-3.7524648889185794, 2.1224985058331005], [-3.3123191098095615, 2.153588702898333], [-2.80975246649598, 1.9712114570096653], [-2.268856462266256, 1.652958931009528], [-1.709001159778989, 1.2664395490411673], [-1.1413833971013372, 0.8517589252820573], [-0.5710732645795573, 0.4272721367616211], [0, 0], [0.571194595265405, -0.4277145118491421]]
 # path1 = np.array([[0,0],[0.5,0],[1,1],[1.5,0.5],[1,0],[-1.5,0.5],[1,-1],[0.5,0],[0,0]])
+def osticaleAvoid2(v,u):
+    alpha =np.arctan2(v,u)*180/np.pi
 
+    # print(alpha)
+    dis = distances()
+    # print(dis)
+    dis1 = dis[0]
+    dis2 = dis[1]
+    dis3 = dis[2]
+    dis4 = dis[3]
+    dis5 = dis[4]
+    dis6 = dis[5]
+    dis7 = dis[6]
+    dis8 = dis[7]
+    # dis8 = 0.4
+    dis9 = dis[8]
+    Opsticle = 0
+    if (20>=alpha>-20):
+        # print("ss1")
+        HeadingDis = [dis1]
+    elif (20<=alpha<60):
+        # print("ss2")
+        HeadingDis = [dis2]
+    elif (60<=alpha<100):
+        # print("ss3")
+        HeadingDis = [dis3]
+    elif (100<=alpha<140):
+        # print("ss4")
+        HeadingDis = [dis4]
+    elif (140<=alpha<180)or(-180< alpha <= -140):
+        # print("ss56")
+        HeadingDis = [dis6,dis5]
+    elif (-140<=alpha<-100):
+        # print("ss7")
+        HeadingDis = [dis7]
+    elif (-100<=alpha<-60):
+        # print("ss8")
+        HeadingDis = [dis8]
+    elif (-60<=alpha<-20):
+        # print("ss9")
+        HeadingDis = [dis9]
+    else:
+        return 0
+
+    
+    for i in range(len(HeadingDis)):
+        if HeadingDis[i] < 0.25: 
+            Opsticle = 1
+            break
+        else :
+            Opsticle = 0
+    return Opsticle 
 
 
 def pure_pursuit_step (path, currentPos, lookAheadDis, LFindex,LastgoalPt) :
@@ -284,7 +336,7 @@ def init():
     pidTheta = PID(0.05,0.3,-0.3) 
     goalPt = [0,0]
     
-def PathFollowing(data):
+def PathFollowing2(data):
     global msecsElapsed,goaltheta,msecStop,msecDemon,WaitFlag,StopFlag,EndFlag,DemonStrateFlag
     global currentPos,lastFoundIndex,lookAheadDis,goalPt,pathOdering
     global vec,pidX,pidY,pidTheta,goalPt
@@ -293,7 +345,11 @@ def PathFollowing(data):
         Dataout[:, 1] = -Dataout[:, 1]
         pathDesiried = Dataout.astype(float)
         pathDesiried*=0.4
-        
+
+        preErr = np.array([[0,0],[0,0]])
+        returnCheckpointError = np.array([[1,0],[0,0]]).tolist()
+        checkpoint = 0
+        ErrorFlag = 0
         signal.signal(signal.SIGINT, signal_handler)
         init()     
         while False == bumper() and True == run:
@@ -305,7 +361,7 @@ def PathFollowing(data):
             # Cập nhật vị trí robot để đưa vào tính toán 
             currentPos = [OdoX,OdoY]
             goalPt,lastFoundIndex = pure_pursuit_step (pathDesiried, currentPos, lookAheadDis, lastFoundIndex,goalPt)
-            print(goalPt)
+
 
             # Đưa thông số vào bộ PID để tính toán cho robot chạy bám theo quỷ đạo 
             u = pidX.PidCal(goalPt[0],OdoX)
@@ -316,40 +372,38 @@ def PathFollowing(data):
             # Sử dụng ma trận xoay để robot chạy xoay trên một đường thẳng 
             uControl = (math.cos(-OdoR)*u - math.sin(-OdoR)*v)
             vControl = (math.sin(-OdoR)*u + math.cos(-OdoR)*v)
-            MoveFlag = opstacleAvoid( QuadRantCheck(uControl,vControl))
-            
+            MoveFlag = osticaleAvoid2( vControl,uControl)
+
+            vec[0] = uControl
+            vec[1] = vControl
+            vec[2] = pidTheta.PidCal(goaltheta,OdoR*180/math.pi)
+
+            if(checkpoint < len(data)):
+                if(abs(OdoX - pathDesiried[checkpoint,0])<0.15 and abs(OdoY - pathDesiried[checkpoint,1])<0.15):
+                    returnCheckpoint = np.array(data[checkpoint]).tolist()
+                    print("returnchekpoint",returnCheckpoint)
+                    returnCheckpoint 
+                    update_target_coordinates("Tensorbot",returnCheckpoint)
+                    checkpoint += 1
+                
                 
             if (lastFoundIndex == len(pathDesiried)-1):
-                # print([msecStop,msecsElapsed,EndFlag])
-                goalPt = pathDesiried[len(pathDesiried)-1]
                 if (abs(goalPt[0] - OdoX)<0.05 and abs(goalPt[1] - OdoY)<0.05 ):
                     if EndFlag == 0:
                         EndFlag = 1 
                 else :
                     EndFlag = 0
                     msecStop = msecsElapsed
+
+            if((checkpoint) < len(data)-1) and (MoveFlag == 1):
+                ErrorFlag = 1
+                returnCheckpointError =  np.array([data[checkpoint],data[checkpoint+1]]).tolist()
+                print("returnCheckpointError", returnCheckpointError)
+                update_target_coordinates("Tensorbot",returnCheckpointError[0])
+                break
                     
             if (msecsElapsed - msecStop > 1000) and EndFlag == 1 :
                 break
-
-            
-            # Đưa độ lớn của 3 vector tính toán được vào mảng để điều khiển robot 
-            if (MoveFlag == 0):
-                vec[0] = uControl
-                vec[1] = vControl
-                vec[2] = pidTheta.PidCal(goaltheta,OdoR*180/math.pi)
-            else :
-                StopFlag = 1
-                msecStop = msecsElapsed
-            
-            if StopFlag == 1 :
-                vec[0] = 0
-                vec[1] = 0
-                vec[2] = 0
-                if (msecsElapsed - msecStop > 1000):
-                    StopFlag = 0
-
-            # Thời gian lấy mẫu
             time.sleep(0.05)
             msecsElapsed += 50
             
@@ -359,7 +413,10 @@ def PathFollowing(data):
     except Exception as e:
         print(e)
         return 1
-    return 0
+    if(ErrorFlag == 1):
+        return returnCheckpointError
+    else :
+        return 0
     
 def init():
     #Khai báo thông số Robot :
@@ -462,7 +519,7 @@ def PathFollowing(data):
         set_vel([0,0,0])
     except Exception as e:
         print(e)
-        yield 1
+        return 1
     return 0
 
 
