@@ -1,5 +1,5 @@
-from .preprocess import Word_Processing
-from .model import Lstm_Model
+from preprocess import Word_Processing
+from model import Lstm_Model
 import torch
 import json
 import sys
@@ -138,5 +138,5 @@ class controller_tensorbot:
 if __name__ == "__main__":
 
     tensorbot = Tensorbot()
-    # tensorbot.chat_mode()
-    print(tensorbot.feed_back("Hello"))
+    tensorbot.chat_mode()
+    # print(tensorbot.feed_back("Hello"))

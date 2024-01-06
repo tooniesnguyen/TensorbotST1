@@ -18,7 +18,7 @@ WIDTH = 800
 ROWS = 100
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 
-WIN_HID = pygame.display.set_mode((WIDTH, WIDTH),flags=pygame.HIDDEN)
+WIN_HID = pygame.display.set_mode((WIDTH, WIDTH))
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -271,7 +271,7 @@ def main(win, width, barrier_file = barrier_file, rows = ROWS):
     pygame.quit()
 
 if __name__ == "__main__":
-    main()
+    main(WIN,WIDTH)
     # collect_barrier()
     # simulation(WIN, WIDTH, barrier_file)
     # Astar_search([0,2],[4,2],barrier_file)
