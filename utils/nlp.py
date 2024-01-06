@@ -1,5 +1,5 @@
-from preprocess import Word_Processing
-from model import Lstm_Model
+from .preprocess import Word_Processing
+from .model import Lstm_Model
 import torch
 import json
 import sys

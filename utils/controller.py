@@ -7,7 +7,7 @@ import signal
 import numpy as np
 from .conn_db import *
 
-ROBOTINOIP = "192.168.0.106"
+ROBOTINOIP = "192.168.203.210"
 PARAMS = {'sid':'example_circle'}
 run = True
 
@@ -444,83 +444,123 @@ def init():
     pidY = PID(1.5,0.6,-0.6)
     pidTheta = PID(0.05,0.3,-0.3) 
     goalPt = [0,0]
-    
-def PathFollowing(data):
+
+
+def calculate_checkpoints(OdoX, OdoY, pathDesiried):
+    checkpoint = 0
+    num_points = pathDesiried.shape[0]
+    Flag = 0
+    while checkpoint < num_points:
+        if abs(OdoX - pathDesiried[checkpoint, 0]) < 0.1 and abs(OdoY - pathDesiried[checkpoint, 1]) < 0.1:
+
+            returnCheckpoint = np.array(pathDesiried[checkpoint])
+            returnCheckpoint/=0.4
+            returnCheckpoint[1] = -returnCheckpoint[1]
+            returnCheckpoint = returnCheckpoint.astype(int)
+            
+            return returnCheckpoint
+
+
+        checkpoint += 1
+    return np.array([[100,100]])
+
+def PathFollowing2(data,Heading = True):
     global msecsElapsed,goaltheta,msecStop,msecDemon,WaitFlag,StopFlag,EndFlag,DemonStrateFlag
     global currentPos,lastFoundIndex,lookAheadDis,goalPt,pathOdering
     global vec,pidX,pidY,pidTheta,goalPt
+
+    
     try:
         Dataout = np.array(data)
         Dataout[:, 1] = -Dataout[:, 1]
         pathDesiried = Dataout.astype(float)
         pathDesiried*=0.4
-        
+
+        preCheckpoint = np.array([[100,100]])
+        preErr = np.array([[0,0],[0,0]])
+        returnCheckpointError = np.array([[1,0],[0,0]])
+        checkpoint = 0
+        ErrorFlag = 0
         signal.signal(signal.SIGINT, signal_handler)
+        errIndex = 0
+        # start_time = time.time()
+        
         init()     
         while False == bumper() and True == run:
             # Đọc ví trí robot từ bộ đo đường 
+            start_time = time.time()
             OdoX = OdometryRead()[0] 
             OdoY = OdometryRead()[1] 
             OdoR = OdometryRead()[2]
-
+    
             # Cập nhật vị trí robot để đưa vào tính toán 
             currentPos = [OdoX,OdoY]
             goalPt,lastFoundIndex = pure_pursuit_step (pathDesiried, currentPos, lookAheadDis, lastFoundIndex,goalPt)
-            print(goalPt)
+
 
             # Đưa thông số vào bộ PID để tính toán cho robot chạy bám theo quỷ đạo 
             u = pidX.PidCal(goalPt[0],OdoX)
             v = pidY.PidCal(goalPt[1],OdoY)
             goaltheta = 0
-            
+            if(Heading):
+                if (pathDesiried[len(data)-1,1]<pathDesiried[0,1]):
+                    goaltheta = -90
+                else :
+                    goaltheta = 90
             
             # Sử dụng ma trận xoay để robot chạy xoay trên một đường thẳng 
             uControl = (math.cos(-OdoR)*u - math.sin(-OdoR)*v)
             vControl = (math.sin(-OdoR)*u + math.cos(-OdoR)*v)
-            MoveFlag = opstacleAvoid( QuadRantCheck(uControl,vControl))
+            MoveFlag = osticaleAvoid2( vControl,uControl)
+
+            vec[0] = uControl
+            vec[1] = vControl
+            vec[2] = pidTheta.PidCal(goaltheta,OdoR*180/math.pi)
+
+            if (calculate_checkpoints(OdoX, OdoY, pathDesiried)!=np.array([[100,100]])).all() and (calculate_checkpoints(OdoX, OdoY, pathDesiried)!=preCheckpoint).all():
+                print(calculate_checkpoints(OdoX, OdoY, pathDesiried).tolist())
+                errIndex = np.where((calculate_checkpoints(OdoX, OdoY, pathDesiried) == np.array(data)).all(axis=1))
+                for index in errIndex[0]:
+                    print(index)
+                    indexUse = index
+            preCheckpoint = calculate_checkpoints(OdoX, OdoY, pathDesiried)
             
                 
             if (lastFoundIndex == len(pathDesiried)-1):
-                # print([msecStop,msecsElapsed,EndFlag])
-                goalPt = pathDesiried[len(pathDesiried)-1]
                 if (abs(goalPt[0] - OdoX)<0.05 and abs(goalPt[1] - OdoY)<0.05 ):
                     if EndFlag == 0:
                         EndFlag = 1 
                 else :
                     EndFlag = 0
                     msecStop = msecsElapsed
-                    
+
+            if(MoveFlag == 1):
+                # data = np.array(data)
+                print(np.array([data[indexUse],data[indexUse+1]]).tolist())
+                break
+                
             if (msecsElapsed - msecStop > 1000) and EndFlag == 1 :
                 break
-
-            
-            # Đưa độ lớn của 3 vector tính toán được vào mảng để điều khiển robot 
-            if (MoveFlag == 0):
-                vec[0] = uControl
-                vec[1] = vControl
-                vec[2] = pidTheta.PidCal(goaltheta,OdoR*180/math.pi)
-            else :
-                StopFlag = 1
-                msecStop = msecsElapsed
-            
-            if StopFlag == 1 :
-                vec[0] = 0
-                vec[1] = 0
-                vec[2] = 0
-                if (msecsElapsed - msecStop > 1000):
-                    StopFlag = 0
-
-            # Thời gian lấy mẫu
             time.sleep(0.05)
-            msecsElapsed += 50
-            
+            current_time = time.time()  # Thời điểm hiện tại
+            if(start_time<current_time):
+                elapsed_time = current_time - start_time  # Thời gian đã trôi qua
+                preElapsed = elapsed_time
+            else :
+                elapsed_time = preElapsed
+                
+            msecsElapsed += int(elapsed_time * 1000) 
+            # odo_data.append([OdoX, OdoY, OdoR,msecsElapsed/1000,goalPt[0],goalPt[1],goaltheta])
             set_vel(vec)
         pathOdering  = np.array([[0,0]])
         set_vel([0,0,0])
     except Exception as e:
         print(e)
         return 1
-    return 0
+    if(ErrorFlag == 1):
+        return returnCheckpointError
+    else :
+        return 0
 
 
 if __name__ == "__main__":
