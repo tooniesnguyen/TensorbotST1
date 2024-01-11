@@ -5,14 +5,30 @@
 }
 
 body {
-    background-image: url('./images/bg.jpeg');
     background-size: cover;
     background-position: center;
     margin: 0;
     height: 100vh;
     font-family: 'Nunito', sans-serif;
     font-size: 100%;
+    animation: backgroundTransition 15s infinite; /* Thời gian chuyển đổi và lặp lại */
 }
+
+@keyframes backgroundTransition {
+    0% {
+        background-image: url('./images/background1.jpg');
+    }
+    33% {
+        background-image: url('./images/background2.jpg');
+    }
+    66% {
+        background-image: url('./images/background3.jpg');
+    }
+    100% {
+        background-image: url('./images/background1.jpg'); /* Quay lại ảnh đầu tiên */
+    }
+}
+
 
 *, html {
     --primaryGradient: linear-gradient(93.12deg, #0064c8 0.52%, #00a9d4 100%);

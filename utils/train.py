@@ -9,7 +9,13 @@ import sys
 import socket
 import os
 from pathlib import Path
+from torch.utils.tensorboard import SummaryWriter
 
+HOST = socket.gethostbyname(socket.gethostname())
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[0]
+WORK_DIR = os.path.dirname(ROOT)
+writer = SummaryWriter(f'{WORK_DIR}/models/runs/nlp')
 
 
 
@@ -34,7 +40,7 @@ class Data_Preprocessing:
                 word = self.word_process.tokenize(pattern)
                 self.all_words.extend(word)
                 self.data.append([word, tag])
-        self.all_words = [self.word_process.stem(w) for w in self.all_words if w not in ignore_words]
+        self.all_words = [self.word_process.lemma(w) for w in self.all_words if w not in ignore_words]
         self.all_words = sorted(set(self.all_words))
         self.tags = sorted(set(self.tags))
         return self.all_words, self.tags, self.data
@@ -69,7 +75,7 @@ def main():
     all_words, tags, _ =data_process.create_data()
     X_train, y_train = data_process.X_y_split()
     print("X_shape", X_train.shape)
-    num_epochs = 3000
+    num_epochs = 300
     batch_size = 8
     learning_rate = 0.001
     input_size = len(X_train[0])
@@ -86,7 +92,13 @@ def main():
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    dummy_input = torch.zeros(1, input_size).to(device)
+    writer.add_graph(model, dummy_input)
+    writer.close()
 
+    running_loss = 0.0
+    running_correct = 0.0
+    n_total_steps = len(train_loader) 
     for epoch in range(num_epochs):
         for (words, labels) in train_loader:
             words = words.to(device)
@@ -101,18 +113,27 @@ def main():
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            
-        if (epoch+1) % 1000 == 0:
+
+            running_loss += loss.item()
+            _, predicted = torch.max(outputs.data, 1)
+            running_correct += (predicted == labels).sum().item()
+            print("run corre", running_correct)
+        if (epoch+1) % 10 == 0:
             print (f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
+            writer.add_scalar('training loss', running_loss / 10/ n_total_steps, epoch )
+            running_accuracy = running_correct / (8*10) / n_total_steps 
+            writer.add_scalar('accuracy', running_accuracy, epoch )
+
+            running_correct = 0
+            running_loss = 0.0
 
     print(f'final loss: {loss.item():.4f}')
     model.save_model(model, all_words, tags, f"{WORK_DIR}/models/best.pth")
 
+
+
     
 if __name__ == "__main__":
-    HOST = socket.gethostbyname(socket.gethostname())
-    FILE = Path(__file__).resolve()
-    ROOT = FILE.parents[0]
-    WORK_DIR = os.path.dirname(ROOT)
+
 
     main()

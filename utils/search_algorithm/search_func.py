@@ -12,7 +12,7 @@ ROOT = FILE.parents[1]
 WORK_DIR = os.path.dirname(ROOT)
 
 WIDTH = 800
-ROWS = 111   
+ROWS = 12   
 
 
 
@@ -153,6 +153,6 @@ if __name__ == "__main__":
     barrier_from_txt = read_txt_file()
 
     # collect_barrier()
-    # simulation()
-    print(Astar_search([0,0], [3,8],barrier_from_txt))
+    simulation()
+    # print(Astar_search([0,0], [3,8],barrier_from_txt))
     # print(WORK_DIR)

@@ -10,7 +10,7 @@ from utils.search_algorithm import search_func, search
 from utils.nlp import Tensorbot
 from utils.controller import PathFollowing2
 from utils.conn_db import *
-# from utils.sim_client import PathFollowing
+# from utils.sim_client import PathFollowing2
 import ssl
 import sys
 import socket
@@ -18,6 +18,7 @@ import os
 from pathlib import Path
 import numpy as np
 import re
+import asyncio
 
 HOST = socket.gethostbyname(socket.gethostname())
 FILE = Path(__file__).resolve()
@@ -46,32 +47,6 @@ class Message(BaseModel):
     
 
 
-# def update_coor_robot(func):
-#     def update_db(*args, **kwargs):
-#         current_pos = func(*args, **kwargs)
-#         print("Current_pos_to_db", current_pos)
-#         try:
-#             while True:
-#                 current_pos_to_db = next(current_pos)
-                
-#                 if len(current_pos_to_db) <= 1:
-#                     update_target_coordinates("Tensorbot",current_pos_to_db[0])
-#                     print("In mode update ############################################################3")
-#                 else:
-#                     update_target_coordinates("Tensorbot",current_pos_to_db[0])
-#                     barrier_arr.extend([current_pos_to_db[i] for i in range(1, len(current_pos_to_db))])
-#                     current_point = retrieval_coordinates("tensorbot")
-#                     path_to_running = search_func.Astar_search(current_point,target_point)
-#                     func_Path_Following(path_to_running)
-#                     print("Update block varibale and then run again A_Star")
-#         except StopIteration:
-#             print("Finish Loop")
-#     return update_db
-
-# @update_coor_robot
-# def func_Path_Following(path):
-#     PathFollowing(path)
-
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -81,25 +56,40 @@ async def predict(message: Message):
     global target_point, barrier_arr
     text = message.message
     response, tag = tensorbot.feed_back(text)
+
     if tag == "moving":
         current_point = retrieval_coordinates("tensorbot")
         target = re.findall(PATTERN, text.lower())
         if target:
-            print("#################", type(retrieval_coordinates(target[0])) )
-            target_point = retrieval_coordinates(target[0]) # return 1D
+            target_point = retrieval_coordinates(target[0])
             barrier_arr = search.read_txt_file()
-            while current_point != target_point:
-                path_to_running = search_func.Astar_search(current_point,target_point,barrier_arr)
-                print("Path to running", path_to_running)
-                check_return = PathFollowing2(path_to_running) # retu 2D
-                if len(check_return)>= 2:
-                    barrier_arr.extend(barrier_i for barrier_i in check_return[1:] if barrier_i not in barrier_arr)
-                    print("Update barrier", len(barrier_arr))
-                current_point = retrieval_coordinates("tensorbot")
-                print("Currenr point", current_point)
-                print("Dieu khien to brak", current_point == target_point)
 
-                
+            async def process_movement():
+                nonlocal current_point
+
+                while current_point != target_point:
+                    path_to_running = search_func.Astar_search(current_point, target_point, barrier_arr)
+                    print("Path to running", path_to_running)
+                    check_return = PathFollowing2(path_to_running)
+                    print("Check return", check_return)
+
+                    if len(check_return) >= 2:
+                        barrier_arr.extend(barrier_i for barrier_i in check_return[1:] if barrier_i not in barrier_arr)
+                        print("Update barrier", len(barrier_arr))
+
+                    current_point = retrieval_coordinates("tensorbot")
+                    print("Current point", current_point)
+                    print("Dieu khien to break", current_point == target_point)
+
+            # Chạy coroutine mà không chờ đợi
+            asyncio.create_task(process_movement())
+    elif tag == "info":
+        target = re.findall(PATTERN, text.lower())
+        info = retrieval_info(target[0])
+        response = "That is "+ info
+
+
+
     return JSONResponse(content={"answer": response})
 
 if __name__ == "__main__":

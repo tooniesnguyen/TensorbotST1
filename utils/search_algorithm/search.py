@@ -15,21 +15,20 @@ ROOT = FILE.parents[1]
 WORK_DIR = os.path.dirname(ROOT)
 
 WIDTH = 800
-ROWS = 100
-WIN = pygame.display.set_mode((WIDTH, WIDTH))
+ROWS = 12
+WIN = pygame.display.set_mode((WIDTH, WIDTH), flags=pygame.HIDDEN)
 
-WIN_HID = pygame.display.set_mode((WIDTH, WIDTH))
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 255, 0)
 YELLOW = (255, 255, 0)
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-PURPLE = (128, 0, 128)
-ORANGE = (255, 165, 0)
+WHITE = (0, 0, 0)
+BLACK = (128, 128, 128)
+PURPLE = (255, 255, 0)
+ORANGE = (255, 0, 0)
 GREY = (128, 128, 128)
-TURQUOISE = (64, 224, 208)
+TURQUOISE = (0, 255, 0)
 barrier_file = f"{WORK_DIR}/data/barrier.txt"
 
 
@@ -48,10 +47,10 @@ class Spot:
         return self.row, self.col
 
     def is_closed(self):
-        return self.color == RED
+        return self.color == WHITE
 
     def is_open(self):
-        return self.color == GREEN
+        return self.color == WHITE
 
     def is_barrier(self):
         return self.color == BLACK
@@ -69,10 +68,10 @@ class Spot:
         self.color = ORANGE
 
     def make_closed(self):
-        self.color = RED
+        self.color = WHITE
 
     def make_open(self):
-        self.color = GREEN
+        self.color = WHITE
 
     def make_barrier(self):
         self.color = BLACK

@@ -46,6 +46,15 @@ def retrieval_coordinates(cursor, target_to_retrieve):
     return coordinates_list
 
 @connect_sql
+def retrieval_info(cursor, target_to_retrieve):
+    query = "SELECT info FROM target_dict WHERE target = %s"
+    cursor.execute(query, (target_to_retrieve,))
+    result = cursor.fetchone()
+
+    return result["info"]
+
+
+@connect_sql
 def update_target_coordinates(cursor, target, new_coordinates):
     query = "UPDATE target_dict SET coordinate = %s WHERE target = %s;"
     cursor.execute(query, (str(new_coordinates), target))
@@ -56,5 +65,5 @@ def update_target_coordinates(cursor, target, new_coordinates):
 if __name__ == "__main__":
     # print(get_list_target())
     update_target_coordinates("Tensorbot", [0,0])
-    # print(retrieval_coordinates("Quang")[1])
+    # print(retrieval_info("E1310"))
 
