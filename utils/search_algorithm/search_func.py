@@ -12,7 +12,7 @@ ROOT = FILE.parents[1]
 WORK_DIR = os.path.dirname(ROOT)
 
 WIDTH = 800
-ROWS = 12   
+ROWS = 47   
 
 
 
@@ -25,6 +25,7 @@ def time_complexity(func):
     return warp
 
 def simulation( width= WIDTH, rows = ROWS):
+    global arr_path_finding
 
     win = pygame.display.set_mode((WIDTH, WIDTH))
     grid = make_grid(rows, width)
@@ -153,6 +154,6 @@ if __name__ == "__main__":
     barrier_from_txt = read_txt_file()
 
     # collect_barrier()
-    simulation()
-    # print(Astar_search([0,0], [3,8],barrier_from_txt))
+    # simulation()
+    print(Astar_search([0,17], [5,28],barrier_from_txt))
     # print(WORK_DIR)

@@ -15,7 +15,7 @@ ROOT = FILE.parents[1]
 WORK_DIR = os.path.dirname(ROOT)
 
 WIDTH = 800
-ROWS = 12
+ROWS = 47
 WIN = pygame.display.set_mode((WIDTH, WIDTH), flags=pygame.HIDDEN)
 
 
@@ -119,6 +119,7 @@ def reconstruct_path(came_from, current, draw):
     return arr_path
 
 def algorithm(draw, grid, start, end):
+    global arr_path_finding
     count = 0
     open_set = PriorityQueue()
     open_set.put((0, count, start))

@@ -1,0 +1,50 @@
+[Fri Jan 12 00:34:25.786025 2024] [proxy:debug] [pid 21275] proxy_util.c(1788): AH00925: initializing worker http://192.168.100.4:8000/ shared
+[Fri Jan 12 00:34:25.786105 2024] [proxy:debug] [pid 21275] proxy_util.c(1845): AH00927: initializing worker http://192.168.100.4:8000/ local
+[Fri Jan 12 00:34:25.786144 2024] [proxy:debug] [pid 21275] proxy_util.c(1896): AH00931: initialized single connection worker in child 21275 for (192.168.100.4)
+[Fri Jan 12 00:34:25.786189 2024] [proxy:debug] [pid 21276] proxy_util.c(1788): AH00925: initializing worker http://192.168.100.4:8000/ shared
+[Fri Jan 12 00:34:25.786234 2024] [proxy:debug] [pid 21276] proxy_util.c(1845): AH00927: initializing worker http://192.168.100.4:8000/ local
+[Fri Jan 12 00:34:25.786278 2024] [proxy:debug] [pid 21276] proxy_util.c(1896): AH00931: initialized single connection worker in child 21276 for (192.168.100.4)
+[Fri Jan 12 00:34:25.786482 2024] [proxy:debug] [pid 21277] proxy_util.c(1788): AH00925: initializing worker http://192.168.100.4:8000/ shared
+[Fri Jan 12 00:34:25.786575 2024] [proxy:debug] [pid 21277] proxy_util.c(1845): AH00927: initializing worker http://192.168.100.4:8000/ local
+[Fri Jan 12 00:34:25.786674 2024] [proxy:debug] [pid 21277] proxy_util.c(1896): AH00931: initialized single connection worker in child 21277 for (192.168.100.4)
+[Fri Jan 12 00:34:25.786775 2024] [proxy:debug] [pid 21278] proxy_util.c(1788): AH00925: initializing worker http://192.168.100.4:8000/ shared
+[Fri Jan 12 00:34:25.786828 2024] [proxy:debug] [pid 21278] proxy_util.c(1845): AH00927: initializing worker http://192.168.100.4:8000/ local
+[Fri Jan 12 00:34:25.786899 2024] [proxy:debug] [pid 21278] proxy_util.c(1896): AH00931: initialized single connection worker in child 21278 for (192.168.100.4)
+[Fri Jan 12 00:34:25.787119 2024] [proxy:debug] [pid 21279] proxy_util.c(1788): AH00925: initializing worker http://192.168.100.4:8000/ shared
+[Fri Jan 12 00:34:25.787153 2024] [proxy:debug] [pid 21279] proxy_util.c(1845): AH00927: initializing worker http://192.168.100.4:8000/ local
+[Fri Jan 12 00:34:25.787194 2024] [proxy:debug] [pid 21279] proxy_util.c(1896): AH00931: initialized single connection worker in child 21279 for (192.168.100.4)
+[Fri Jan 12 00:34:44.626824 2024] [authz_core:debug] [pid 21275] mod_authz_core.c(835): [client 192.168.100.5:54808] AH01628: authorization result: granted (no directives)
+[Fri Jan 12 00:34:44.627298 2024] [proxy:debug] [pid 21275] mod_proxy.c(1230): [client 192.168.100.5:54808] AH01143: Running scheme http handler (attempt 0)
+[Fri Jan 12 00:34:44.627431 2024] [proxy_fcgi:debug] [pid 21275] mod_proxy_fcgi.c(995): [client 192.168.100.5:54808] AH01076: url: http://192.168.100.4:8000/templates/ proxyname: (null) proxyport: 0
+[Fri Jan 12 00:34:44.627700 2024] [proxy_fcgi:debug] [pid 21275] mod_proxy_fcgi.c(998): [client 192.168.100.5:54808] AH01077: declining URL http://192.168.100.4:8000/templates/
+[Fri Jan 12 00:34:44.627990 2024] [proxy:warn] [pid 21275] [client 192.168.100.5:54808] AH01144: No protocol handler was valid for the URL /templates/ (scheme 'http'). If you are using a DSO version of mod_proxy, make sure the proxy submodules are included in the configuration using LoadModule.
+[Fri Jan 12 00:34:47.816814 2024] [authz_core:debug] [pid 21276] mod_authz_core.c(835): [client 192.168.100.5:54809] AH01628: authorization result: granted (no directives)
+[Fri Jan 12 00:34:47.817108 2024] [proxy:debug] [pid 21276] mod_proxy.c(1230): [client 192.168.100.5:54809] AH01143: Running scheme http handler (attempt 0)
+[Fri Jan 12 00:34:47.817256 2024] [proxy_fcgi:debug] [pid 21276] mod_proxy_fcgi.c(995): [client 192.168.100.5:54809] AH01076: url: http://192.168.100.4:8000/templates/ proxyname: (null) proxyport: 0
+[Fri Jan 12 00:34:47.817373 2024] [proxy_fcgi:debug] [pid 21276] mod_proxy_fcgi.c(998): [client 192.168.100.5:54809] AH01077: declining URL http://192.168.100.4:8000/templates/
+[Fri Jan 12 00:34:47.817469 2024] [proxy:warn] [pid 21276] [client 192.168.100.5:54809] AH01144: No protocol handler was valid for the URL /templates/ (scheme 'http'). If you are using a DSO version of mod_proxy, make sure the proxy submodules are included in the configuration using LoadModule.
+[Fri Jan 12 00:34:49.333672 2024] [authz_core:debug] [pid 21277] mod_authz_core.c(835): [client 192.168.100.5:54810] AH01628: authorization result: granted (no directives)
+[Fri Jan 12 00:34:49.334160 2024] [proxy:debug] [pid 21277] mod_proxy.c(1230): [client 192.168.100.5:54810] AH01143: Running scheme http handler (attempt 0)
+[Fri Jan 12 00:34:49.334368 2024] [proxy_fcgi:debug] [pid 21277] mod_proxy_fcgi.c(995): [client 192.168.100.5:54810] AH01076: url: http://192.168.100.4:8000/templates/ proxyname: (null) proxyport: 0
+[Fri Jan 12 00:34:49.334633 2024] [proxy_fcgi:debug] [pid 21277] mod_proxy_fcgi.c(998): [client 192.168.100.5:54810] AH01077: declining URL http://192.168.100.4:8000/templates/
+[Fri Jan 12 00:34:49.334772 2024] [proxy:warn] [pid 21277] [client 192.168.100.5:54810] AH01144: No protocol handler was valid for the URL /templates/ (scheme 'http'). If you are using a DSO version of mod_proxy, make sure the proxy submodules are included in the configuration using LoadModule.
+[Fri Jan 12 00:38:19.986045 2024] [authz_core:debug] [pid 21278] mod_authz_core.c(835): [client 192.168.100.5:54813] AH01628: authorization result: granted (no directives)
+[Fri Jan 12 00:38:19.986611 2024] [proxy:debug] [pid 21278] mod_proxy.c(1230): [client 192.168.100.5:54813] AH01143: Running scheme http handler (attempt 0)
+[Fri Jan 12 00:38:19.986863 2024] [proxy_fcgi:debug] [pid 21278] mod_proxy_fcgi.c(995): [client 192.168.100.5:54813] AH01076: url: http://192.168.100.4:8000/templates/ proxyname: (null) proxyport: 0
+[Fri Jan 12 00:38:19.987035 2024] [proxy_fcgi:debug] [pid 21278] mod_proxy_fcgi.c(998): [client 192.168.100.5:54813] AH01077: declining URL http://192.168.100.4:8000/templates/
+[Fri Jan 12 00:38:19.987174 2024] [proxy:warn] [pid 21278] [client 192.168.100.5:54813] AH01144: No protocol handler was valid for the URL /templates/ (scheme 'http'). If you are using a DSO version of mod_proxy, make sure the proxy submodules are included in the configuration using LoadModule.
+[Fri Jan 12 01:05:27.714966 2024] [authz_core:debug] [pid 21279] mod_authz_core.c(835): [client 192.168.100.4:40432] AH01628: authorization result: granted (no directives), referer: http://192.168.100.4/static/style.css
+[Fri Jan 12 01:05:27.715117 2024] [proxy:debug] [pid 21279] mod_proxy.c(1230): [client 192.168.100.4:40432] AH01143: Running scheme http handler (attempt 0), referer: http://192.168.100.4/static/style.css
+[Fri Jan 12 01:05:27.715169 2024] [proxy_fcgi:debug] [pid 21279] mod_proxy_fcgi.c(995): [client 192.168.100.4:40432] AH01076: url: http://192.168.100.4:8000/static/images/background3.jpg proxyname: (null) proxyport: 0, referer: http://192.168.100.4/static/style.css
+[Fri Jan 12 01:05:27.715212 2024] [proxy_fcgi:debug] [pid 21279] mod_proxy_fcgi.c(998): [client 192.168.100.4:40432] AH01077: declining URL http://192.168.100.4:8000/static/images/background3.jpg, referer: http://192.168.100.4/static/style.css
+[Fri Jan 12 01:05:27.715254 2024] [proxy:warn] [pid 21279] [client 192.168.100.4:40432] AH01144: No protocol handler was valid for the URL /static/images/background3.jpg (scheme 'http'). If you are using a DSO version of mod_proxy, make sure the proxy submodules are included in the configuration using LoadModule., referer: http://192.168.100.4/static/style.css
+[Fri Jan 12 01:05:28.096226 2024] [authz_core:debug] [pid 21275] mod_authz_core.c(835): [client 192.168.100.4:40446] AH01628: authorization result: granted (no directives)
+[Fri Jan 12 01:05:28.096356 2024] [proxy:debug] [pid 21275] mod_proxy.c(1230): [client 192.168.100.4:40446] AH01143: Running scheme http handler (attempt 0)
+[Fri Jan 12 01:05:28.096426 2024] [proxy_fcgi:debug] [pid 21275] mod_proxy_fcgi.c(995): [client 192.168.100.4:40446] AH01076: url: http://192.168.100.4:8000/templates:8000 proxyname: (null) proxyport: 0
+[Fri Jan 12 01:05:28.096474 2024] [proxy_fcgi:debug] [pid 21275] mod_proxy_fcgi.c(998): [client 192.168.100.4:40446] AH01077: declining URL http://192.168.100.4:8000/templates:8000
+[Fri Jan 12 01:05:28.096556 2024] [proxy:warn] [pid 21275] [client 192.168.100.4:40446] AH01144: No protocol handler was valid for the URL /templates:8000 (scheme 'http'). If you are using a DSO version of mod_proxy, make sure the proxy submodules are included in the configuration using LoadModule.
+[Fri Jan 12 01:05:58.441973 2024] [authz_core:debug] [pid 21276] mod_authz_core.c(835): [client 192.168.100.4:57458] AH01628: authorization result: granted (no directives)
+[Fri Jan 12 01:05:58.442159 2024] [proxy:debug] [pid 21276] mod_proxy.c(1230): [client 192.168.100.4:57458] AH01143: Running scheme http handler (attempt 0)
+[Fri Jan 12 01:05:58.442236 2024] [proxy_fcgi:debug] [pid 21276] mod_proxy_fcgi.c(995): [client 192.168.100.4:57458] AH01076: url: http://192.168.100.4:8000/templates:8000 proxyname: (null) proxyport: 0
+[Fri Jan 12 01:05:58.442299 2024] [proxy_fcgi:debug] [pid 21276] mod_proxy_fcgi.c(998): [client 192.168.100.4:57458] AH01077: declining URL http://192.168.100.4:8000/templates:8000
+[Fri Jan 12 01:05:58.442382 2024] [proxy:warn] [pid 21276] [client 192.168.100.4:57458] AH01144: No protocol handler was valid for the URL /templates:8000 (scheme 'http'). If you are using a DSO version of mod_proxy, make sure the proxy submodules are included in the configuration using LoadModule.

@@ -1,13 +1,12 @@
 import numpy as np
 import nltk
-nltk.download('wordnet')
 
-try:
-    nltk.data.find('tokenizers/punkt')
-    nltk.data.find('corpora/wordnet')
-except:
-    nltk.download('punkt')
-    nltk.download('wordnet')   
+# try:
+#     nltk.data.find('tokenizers/punkt')
+#     nltk.data.find('corpora/wordnet')
+# except:
+#     nltk.download('punkt')
+#     nltk.download('wordnet')   
 from nltk.stem.wordnet import WordNetLemmatizer
 
 class Word_Processing:
