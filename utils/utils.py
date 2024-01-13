@@ -11,6 +11,8 @@ def speech_moving(dir_wav="/home/toonies/Learn/Tensorbot/data/speechs/vi/hoantha
         return playsound("/home/toonies/Learn/Tensorbot/data/speechs/vi/hoanthanh.wav")
     elif mode == "avoid":
         return playsound("/home/toonies/Learn/Tensorbot/data/speechs/vi/tranhduong.wav")
+    elif mode == "start":
+        return playsound("/home/toonies/Learn/Tensorbot/data/speechs/vi/batdau.wav")
 
 def dummy_func(val_return1):
     global stop_speech_event

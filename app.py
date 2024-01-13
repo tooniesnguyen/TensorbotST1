@@ -59,6 +59,7 @@ async def predict(message: Message):
     response, tag = tensorbot.feed_back(text)
 
     if tag == "moving":
+        
         current_point = retrieval_coordinates("tensorbot")
         target = re.findall(PATTERN, text.lower())
         if target:
@@ -68,6 +69,8 @@ async def predict(message: Message):
             async def process_movement():
                 nonlocal current_point
 
+
+                speech_moving(mode = "start")
                 while current_point != target_point:
                     path_to_running = search_func.Astar_search(current_point, target_point, barrier_arr)
                     print("Path to running", path_to_running)

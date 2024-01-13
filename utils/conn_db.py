@@ -64,6 +64,6 @@ def update_target_coordinates(cursor, target, new_coordinates):
 
 if __name__ == "__main__":
     # print(get_list_target())
-    update_target_coordinates("Tensorbot", [0,0])
+    update_target_coordinates("E1309", [1,102])
     # print(retrieval_info("E1310"))
 

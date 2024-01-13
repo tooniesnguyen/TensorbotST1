@@ -8,7 +8,7 @@ import numpy as np
 from .conn_db import *
 
 from utils.utils import speech_moving
-ROBOTINOIP = "192.168.0.102"
+ROBOTINOIP = "192.168.0.101"
 PARAMS = {'sid':'example_circle'}
 run = True
 
@@ -316,7 +316,7 @@ def init():
     lastFoundIndex = 0
     currentPos = [0, 0]
     lastFoundIndex = 0
-    lookAheadDis = 0.2
+    lookAheadDis = 0.22
 
     #Khai báo cờ phục vụ việc dừng robot :
     global msecsElapsed,goaltheta,msecStop,WaitFlag,StopFlag,EndFlag,DemonStrateFlag,msecDemon
@@ -332,8 +332,8 @@ def init():
     #Khai báo thông số robot :
     global vec,pidX,pidY,pidTheta,goalPt
     vec = [0,0,0]
-    pidX = PID(1.5,0.5,-0.5)
-    pidY = PID(1.5,0.5,-0.5)
+    pidX = PID(0.8,0.5,-0.5)
+    pidY = PID(0.8,0.5,-0.5)
     pidTheta = PID(0.03,0.3,-0.3) 
     goalPt = [0,0]
 def calculate_checkpoints(OdoX, OdoY, pathDesiried):
@@ -347,6 +347,7 @@ def calculate_checkpoints(OdoX, OdoY, pathDesiried):
             returnCheckpoint/=0.4
             returnCheckpoint[1] = -returnCheckpoint[1]
             returnCheckpoint = returnCheckpoint.astype(int)
+            returnCheckpoint += np.array([0,63])
             
             return returnCheckpoint
 
@@ -361,7 +362,9 @@ def PathFollowing2(data,Heading = False):
     
     try:
         Dataout = np.array(data)
+        Dataout = Dataout - np.array([0,63])
         Dataout[:, 1] = -Dataout[:, 1]
+
         pathDesiried = Dataout.astype(float)
         pathDesiried*=0.4
 
@@ -428,20 +431,17 @@ def PathFollowing2(data,Heading = False):
                 vec[1] = vControl
                 vec[2] = pidTheta.PidCal(goaltheta,GocTraVe)               
             else:
-                msecWait = 0
+                count = 0
                 set_vel([0,0,0])
                 while True :
-                    speech_moving(mode="avoid")
-                    # print("Time to escape ",time.time() - msecWait)
-                    if osticaleAvoid2( vControl,uControl)==0:
+                    count+=1
+                    if(osticaleAvoid2( vControl,uControl) == 0):
                         break
-                    if (msecWait>2):
+                    if (count>2):
                         break
-
-                    msecWait += 1
                     # msecsElapsed += 50
-                    # time.sleep(0.05)
-                if msecWait>=2:
+                    speech_moving(mode="avoid")
+                if osticaleAvoid2( vControl,uControl):
                     # data = np.array(data)
                     if(indexUse+1>=len(data)):
                         returnCheckpointError_ =  np.array([data[indexUse],data[indexUse]]).tolist() 
@@ -449,6 +449,7 @@ def PathFollowing2(data,Heading = False):
                         returnCheckpointError_ =  np.array([data[indexUse],data[indexUse+1]]).tolist()
                     update_target_coordinates("Tensorbot",returnCheckpointError_[0])
                     errorFlag = 1
+                    # print("lmao")
                     # print( np.array([data[indexUse],data[indexUse+1]]).tolist())
                     break
                 
@@ -469,7 +470,7 @@ def PathFollowing2(data,Heading = False):
         set_vel([0,0,0])
     except Exception as e:
         print(e)
-        return np.array([data[indexUse],data[indexUse+1]]).tolist()
+        # return np.array([data[indexUse],data[indexUse+1]]).tolist()
     if (errorFlag):
         return returnCheckpointError_
     else :
