@@ -18,7 +18,7 @@ def connect_sql(func):
 
         finally:
             cursor.close()
-            conn.close()
+            # conn.close()
     return wrap
 
 
@@ -60,10 +60,19 @@ def update_target_coordinates(cursor, target, new_coordinates):
     cursor.execute(query, (str(new_coordinates), target))
     print("Update sucessful")
 
+@connect_sql
+def update_target_info(cursor, target, new_info):
+    query = "UPDATE target_dict SET info = %s WHERE target = %s;"
+    cursor.execute(query, (new_info, target))
+    print("Update sucessful")
 
+# INSERT INTO target_dict (target, coordinate) VALUES ('E1305', '[0,79]');
+# INSERT INTO target_dict (target, coordinate, info) VALUES ('E1305', '[0,79]', NULL);
 
+# INSERT INTO target_dict (target, info) VALUES ('SCADA', 'SCADA stands for "Supervisory Control and Data Acquisition", and is an automation control and monitoring system widely used in industrial processes and facilities. Infrastructure.');
 if __name__ == "__main__":
     # print(get_list_target())
-    update_target_coordinates("E1309", [1,102])
+    # update_target_coordinates("E1309", [1,104])
     # print(retrieval_info("E1310"))
+    update_target_info('PLC', 'PLC stands for "Programmable Logic Controller". This is an electronic device widely used in industrial automation to control and monitor manufacturing systems and processes. Here you will learn a lot about Siemens')
 

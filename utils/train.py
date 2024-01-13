@@ -75,9 +75,9 @@ def main():
     all_words, tags, _ =data_process.create_data()
     X_train, y_train = data_process.X_y_split()
     print("X_shape", X_train.shape)
-    num_epochs = 300
+    num_epochs = 5000
     batch_size = 8
-    learning_rate = 0.001
+    learning_rate = 0.0001
     input_size = len(X_train[0])
     hidden_size = 8
     output_size = len(tags)
@@ -117,8 +117,8 @@ def main():
             running_loss += loss.item()
             _, predicted = torch.max(outputs.data, 1)
             running_correct += (predicted == labels).sum().item()
-            print("run corre", running_correct)
-        if (epoch+1) % 10 == 0:
+            # print("run corre", running_correct)
+        if (epoch+1) % 100 == 0:
             print (f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
             writer.add_scalar('training loss', running_loss / 10/ n_total_steps, epoch )
             running_accuracy = running_correct / (8*10) / n_total_steps 

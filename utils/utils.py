@@ -3,17 +3,24 @@ import multiprocessing
 from .sim_client import PathFollowing2
 from playsound import playsound
 import time
-
+import socket
+import os
+from pathlib import Path
 # stop_speech_event = Event()
 
-def speech_moving(dir_wav="/home/toonies/Learn/Tensorbot/data/speechs/vi/hoanthanh.wav", mode = "finish"):
+HOST = socket.gethostbyname(socket.gethostname())
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[0]
+WORK_DIR = os.path.dirname(ROOT)
+def speech_moving(dir_wav=f"{WORK_DIR}/data/speechs/vi/hoanthanh.wav", mode = "finish"):
     if mode == "finish":
-        return playsound("/home/toonies/Learn/Tensorbot/data/speechs/vi/hoanthanh.wav")
+        return playsound(f"{WORK_DIR}/data/speechs/vi/hoanthanh.wav")
     elif mode == "avoid":
-        return playsound("/home/toonies/Learn/Tensorbot/data/speechs/vi/tranhduong.wav")
+        return playsound(f"{WORK_DIR}/data/speechs/vi/tranhduong.wav")
     elif mode == "start":
-        return playsound("/home/toonies/Learn/Tensorbot/data/speechs/vi/batdau.wav")
-
+        return playsound(f"{WORK_DIR}/data/speechs/vi/batdau.wav")
+    elif mode == "found":
+        return playsound(f"{WORK_DIR}/data/speechs/vi/timduong.wav")
 def dummy_func(val_return1):
     global stop_speech_event
     print("Function 1: starting")

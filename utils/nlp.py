@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import random
 import time
+import re
 
 HOST = socket.gethostbyname(socket.gethostname())
 FILE = Path(__file__).resolve()
@@ -56,6 +57,7 @@ class Tensorbot:
     
     # @time_complexity
     def feed_back(self, sentence):
+        print("Sentence afte process ", sentence)
         sentence = self.word_process.tokenize(sentence)
         X = self.word_process.bag_words(sentence, self.all_words)
         X = X.reshape(1, X.shape[0])

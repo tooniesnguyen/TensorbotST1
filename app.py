@@ -8,9 +8,9 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils.search_algorithm import search_func, search
 from utils.nlp import Tensorbot
-from utils.controller import PathFollowing2
 from utils.conn_db import *
-# from utils.sim_client import PathFollowing2
+# from utils.controller import PathFollowing2
+from utils.sim_client import PathFollowing2
 from utils.utils import speech_moving
 import ssl
 import sys
@@ -20,6 +20,8 @@ from pathlib import Path
 import numpy as np
 import re
 import asyncio
+from datetime import datetime
+
 
 HOST = socket.gethostbyname(socket.gethostname())
 FILE = Path(__file__).resolve()
@@ -54,49 +56,56 @@ async def root(request: Request):
 
 @app.post("/predict")
 async def predict(message: Message):
-    global target_point, barrier_arr
-    text = message.message
-    response, tag = tensorbot.feed_back(text)
+    try:
+        global target_point, barrier_arr
+        text = message.message
+        text = re.sub(r'[^\w\s]', '',text)
+        response, tag = tensorbot.feed_back(text)
 
-    if tag == "moving":
-        
-        current_point = retrieval_coordinates("tensorbot")
-        target = re.findall(PATTERN, text.lower())
-        if target:
-            target_point = retrieval_coordinates(target[0])
-            barrier_arr = search.read_txt_file()
+        if tag == "moving":
+            
+            current_point = retrieval_coordinates("tensorbot")
+            target = re.findall(PATTERN, text.lower())
+            if target:
+                target_point = retrieval_coordinates(target[0])
+                barrier_arr = search.read_txt_file()
 
-            async def process_movement():
-                nonlocal current_point
-
-
-                speech_moving(mode = "start")
-                while current_point != target_point:
-                    path_to_running = search_func.Astar_search(current_point, target_point, barrier_arr)
-                    print("Path to running", path_to_running)
-                    check_return = PathFollowing2(path_to_running)
-                    print("Check return", check_return)
-
-                    if len(check_return) >= 2:
-                        barrier_arr.extend(barrier_i for barrier_i in check_return[1:] if barrier_i not in barrier_arr)
-                        print("Update barrier", len(barrier_arr))
-
-                    current_point = retrieval_coordinates("tensorbot")
-                    print("Current point", current_point)
-                    print("Dieu khien to break", current_point == target_point)
-                    if current_point == target_point:
-                        speech_moving(mode = "finish")
-
-            # Chạy coroutine mà không chờ đợi
-            asyncio.create_task(process_movement())
-    elif tag == "info":
-        target = re.findall(PATTERN, text.lower())
-        info = retrieval_info(target[0])
-        response = "That is "+ info
+                async def process_movement():
+                    nonlocal current_point
 
 
+                    speech_moving(mode = "start")
+                    while current_point != target_point:
+                        path_to_running = search_func.Astar_search(current_point, target_point, barrier_arr)
+                        speech_moving(mode = "found")
+                        print("Path to running", path_to_running)
+                        check_return = PathFollowing2(path_to_running)
+                        print("Check return", check_return)
 
-    return JSONResponse(content={"answer": response})
+                        if len(check_return) >= 2:
+                            barrier_arr.extend(barrier_i for barrier_i in check_return[1:] if barrier_i not in barrier_arr)
+                            print("Update barrier", len(barrier_arr))
+
+                        current_point = retrieval_coordinates("tensorbot")
+                        print("Current point", current_point)
+                        print("Dieu khien to break", current_point == target_point)
+                        if current_point == target_point:
+                            speech_moving(mode = "finish")
+
+                # Chạy coroutine mà không chờ đợi
+                asyncio.create_task(process_movement())
+        elif tag == "info":
+            target = re.findall(PATTERN, text.lower())
+            response = retrieval_info(target[0])
+        elif tag == "time":
+            current_time = datetime.now()
+            response = current_time.strftime("Day: %A, Date: %d/%m/%Y, Time: %H:%M")
+
+        return JSONResponse(content={"answer": response})
+    
+    except:
+        response = "Sorry, I don't understand"
+        return JSONResponse(content={"answer": response})
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True, workers=Pool()._processes)
