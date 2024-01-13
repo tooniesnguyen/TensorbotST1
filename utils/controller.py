@@ -7,6 +7,7 @@ import signal
 import numpy as np
 from .conn_db import *
 
+from utils.utils import speech_moving
 ROBOTINOIP = "192.168.0.102"
 PARAMS = {'sid':'example_circle'}
 run = True
@@ -352,7 +353,7 @@ def calculate_checkpoints(OdoX, OdoY, pathDesiried):
 
         checkpoint += 1
     return np.array([[100,100]])
-def PathFollowing2(data,Heading = True):
+def PathFollowing2(data,Heading = False):
     global msecsElapsed,goaltheta,msecStop,msecDemon,WaitFlag,StopFlag,EndFlag,DemonStrateFlag
     global currentPos,lastFoundIndex,lookAheadDis,goalPt,pathOdering
     global vec,pidX,pidY,pidTheta,goalPt
@@ -373,17 +374,19 @@ def PathFollowing2(data,Heading = True):
         signal.signal(signal.SIGINT, signal_handler)
         errIndex = 0
         errorFlag = 0
-        indexUse = 0
         # start_time = time.time()
-        
+        indexUse = 0
         init()     
+        
         while False == bumper() and True == run:
             # Đọc ví trí robot từ bộ đo đường 
             start_time = time.time()
             OdoX = OdometryRead()[0] 
             OdoY = OdometryRead()[1] 
             OdoR = OdometryRead()[2]
-    
+
+            GocTraVe = OdometryRead()[2]*180/(np.pi)
+            
             # Cập nhật vị trí robot để đưa vào tính toán 
             currentPos = [OdoX,OdoY]
             goalPt,lastFoundIndex = pure_pursuit_step (pathDesiried, currentPos, lookAheadDis, lastFoundIndex,goalPt)
@@ -393,20 +396,12 @@ def PathFollowing2(data,Heading = True):
             u = pidX.PidCal(goalPt[0],OdoX)
             v = pidY.PidCal(goalPt[1],OdoY)
             goaltheta = 0
-            # if(Heading):
-            #     if (pathDesiried[len(data)-1,1]<pathDesiried[0,1]):
-            #         goaltheta = -90
-            #     else :
-            #         goaltheta = 90
-            
             # Sử dụng ma trận xoay để robot chạy xoay trên một đường thẳng 
             uControl = (math.cos(-OdoR)*u - math.sin(-OdoR)*v)
             vControl = (math.sin(-OdoR)*u + math.cos(-OdoR)*v)
             MoveFlag = osticaleAvoid2( vControl,uControl)
 
-            vec[0] = uControl
-            vec[1] = vControl
-            vec[2] = pidTheta.PidCal(goaltheta,OdoR*180/math.pi)
+
 
             if (calculate_checkpoints(OdoX, OdoY, pathDesiried)!=np.array([[100,100]])).all() and (calculate_checkpoints(OdoX, OdoY, pathDesiried)!=preCheckpoint).all():
 
@@ -428,13 +423,34 @@ def PathFollowing2(data,Heading = True):
                     EndFlag = 0
                     msecStop = msecsElapsed
 
-            if(MoveFlag == 1):
-                # data = np.array(data)
-                returnCheckpointError_ =  np.array([data[indexUse],data[indexUse+1]]).tolist()
-                update_target_coordinates("Tensorbot",returnCheckpointError_[0])
-                errorFlag = 1
-                # print( np.array([data[indexUse],data[indexUse+1]]).tolist())
-                break
+            if(MoveFlag == 0):
+                vec[0] = uControl
+                vec[1] = vControl
+                vec[2] = pidTheta.PidCal(goaltheta,GocTraVe)               
+            else:
+                msecWait = 0
+                set_vel([0,0,0])
+                while True :
+                    speech_moving(mode="avoid")
+                    # print("Time to escape ",time.time() - msecWait)
+                    if osticaleAvoid2( vControl,uControl)==0:
+                        break
+                    if (msecWait>2):
+                        break
+
+                    msecWait += 1
+                    # msecsElapsed += 50
+                    # time.sleep(0.05)
+                if msecWait>=2:
+                    # data = np.array(data)
+                    if(indexUse+1>=len(data)):
+                        returnCheckpointError_ =  np.array([data[indexUse],data[indexUse]]).tolist() 
+                    else:
+                        returnCheckpointError_ =  np.array([data[indexUse],data[indexUse+1]]).tolist()
+                    update_target_coordinates("Tensorbot",returnCheckpointError_[0])
+                    errorFlag = 1
+                    # print( np.array([data[indexUse],data[indexUse+1]]).tolist())
+                    break
                 
             if (msecsElapsed - msecStop > 1000) and EndFlag == 1 :
                 break
@@ -458,6 +474,7 @@ def PathFollowing2(data,Heading = True):
         return returnCheckpointError_
     else :
         return returnCheckpoint
+
 
 
 

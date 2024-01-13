@@ -11,8 +11,8 @@ FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]
 WORK_DIR = os.path.dirname(ROOT)
 
-WIDTH = 800
-ROWS = 47   
+WIDTH = 1000
+ROWS = 100   
 
 
 
@@ -24,7 +24,7 @@ def time_complexity(func):
         return result
     return warp
 
-def simulation( width= WIDTH, rows = ROWS):
+def simulation(width= WIDTH, rows = ROWS):
     global arr_path_finding
 
     win = pygame.display.set_mode((WIDTH, WIDTH))
@@ -91,20 +91,26 @@ def simulation( width= WIDTH, rows = ROWS):
 
 
 
-def collect_barrier(show_mode=1, width=WIDTH, rows =  ROWS):
+def collect_barrier(show_mode=1, width=WIDTH, rows =  ROWS, reload_barr = False):
     if show_mode:
         win = pygame.display.set_mode((WIDTH, WIDTH))
     else:
         win = pygame.display.set_mode((WIDTH, WIDTH),flags=pygame.HIDDEN)
     grid = make_grid(ROWS, width)
     barrier_arr = []
+    if reload_barr:
+        data_from_txt = read_txt_file()
+        barrier_arr = data_from_txt
+        for temp_data in data_from_txt:
+            spot = grid[temp_data[0]][temp_data[1]]
+            spot.make_barrier()
     run = True
     while run:
         draw(win, grid, rows, width)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            if pygame.mouse.get_pressed()[0]:
+            if pygame.mouse.get_pressed()[0]:  # LEFT
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, rows, width)
                 spot = grid[row][col]
@@ -114,8 +120,12 @@ def collect_barrier(show_mode=1, width=WIDTH, rows =  ROWS):
                     barrier_arr.append(temp_arr)
             elif pygame.mouse.get_pressed()[2]:  # RIGHT
                 pos = pygame.mouse.get_pos()
-                row, col = get_clicked_pos(pos, ROWS, width)
+                row, col = get_clicked_pos(pos, rows, width)
                 spot = grid[row][col]
+                arr_to_remove=[spot.row, spot.col]
+                barrier_arr = [item for item in barrier_arr if item != arr_to_remove] 
+                spot.reset()
+                
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     write_txt_file(barrier_arr)
@@ -153,7 +163,7 @@ def Astar_search(current_coor, target_coor, barrier_arr, rows = ROWS, show_mode 
 if __name__ == "__main__":
     barrier_from_txt = read_txt_file()
 
-    # collect_barrier()
+    collect_barrier(reload_barr=False)
     # simulation()
-    print(Astar_search([0,17], [5,28],barrier_from_txt))
+    # print(Astar_search([0,17], [5,28],barrier_from_txt))
     # print(WORK_DIR)
