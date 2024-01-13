@@ -7,6 +7,46 @@ import signal
 import numpy as np
 from .conn_db import *
 
+
+
+#########################################################
+from multiprocessing import Process, Event, Queue
+import multiprocessing
+from pydub import AudioSegment
+from pydub.playback import play
+import time
+
+stop_speech_event = Event()
+#########################################################
+
+################### Func Speech #########################
+def speech_moving(dir_wav="/home/toonies/Learn/Tensorbot/data/speech.wav"):
+    while True:
+        sound = AudioSegment.from_file(dir_wav, format="wav")
+        play(sound)
+        print("Speech finished")
+        if stop_speech_event.is_set():
+            print("Vao co de break ......")
+            break
+
+
+
+
+def Run_Parallel_Func(func1, val_input1, func2= speech_moving):
+    val_return1 = Queue()
+    func1_temp = Process(target=func1, args=(val_return1,val_input1,))
+    func1_temp.start()
+
+    func2_temp = Process(target=func2)
+    func2_temp.start()
+
+    return_value = val_return1.get()
+    func2_temp.terminate()
+
+    return return_value
+#########################################################
+
+
 ROBOTINOIP = "192.168.0.102"
 PARAMS = {'sid':'example_circle'}
 run = True
@@ -315,7 +355,7 @@ def init():
     lastFoundIndex = 0
     currentPos = [0, 0]
     lastFoundIndex = 0
-    lookAheadDis = 0.15
+    lookAheadDis = 0.2
 
     #Khai báo cờ phục vụ việc dừng robot :
     global msecsElapsed,goaltheta,msecStop,WaitFlag,StopFlag,EndFlag,DemonStrateFlag,msecDemon
@@ -352,12 +392,16 @@ def calculate_checkpoints(OdoX, OdoY, pathDesiried):
 
         checkpoint += 1
     return np.array([[100,100]])
-def PathFollowing2(data,Heading = True):
+
+
+
+def PathFollowing2(val_return1,data,Heading = True):
     global msecsElapsed,goaltheta,msecStop,msecDemon,WaitFlag,StopFlag,EndFlag,DemonStrateFlag
     global currentPos,lastFoundIndex,lookAheadDis,goalPt,pathOdering
     global vec,pidX,pidY,pidTheta,goalPt
 
-    
+
+       
     try:
         Dataout = np.array(data)
         Dataout[:, 1] = -Dataout[:, 1]
@@ -452,11 +496,31 @@ def PathFollowing2(data,Heading = True):
         pathOdering  = np.array([[0,0]])
         set_vel([0,0,0])
     except Exception as e:
-        print(e)
+        ############################################
+        print("Keo Co Break...........................")
+        stop_speech_event.set()
+        # Replace for return
+        val_return1.put(np.array([data[indexUse],data[indexUse+1]]).tolist())
+        ############################################
         return np.array([data[indexUse],data[indexUse+1]]).tolist()
+
     if (errorFlag):
+
+        ############################################
+        print("Keo CO Break...........................")
+        stop_speech_event.set()
+        # Replace for return
+        val_return1.put(returnCheckpointError_)
+        ############################################
         return returnCheckpointError_
+    
     else :
+        ############################################
+        print("Keo CO Break...........................")
+        stop_speech_event.set()
+        # Replace for return
+        val_return1.put(returnCheckpoint)
+        ############################################
         return returnCheckpoint
 
 

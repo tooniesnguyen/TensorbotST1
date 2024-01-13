@@ -1,30 +1,45 @@
-from multiprocessing import Process
+from multiprocessing import Process, Event, Queue
+import multiprocessing
+from sim_client import PathFollowing2
+from pydub import AudioSegment
+from pydub.playback import play
+import time
 
+stop_speech_event = Event()
 
-def func1():
-    print("func1: starting")
-    for i in range(10000000):
-        pass
+def speech_moving(dir_wav="/home/toonies/Learn/Tensorbot/data/speech.wav"):
+    while True:
+        sound = AudioSegment.from_file(dir_wav, format="wav")
+        play(sound)
+        print("Speech finished")
+        if stop_speech_event.is_set():
+            break
 
-    print("func1: finishing")
+def dummy_func(val_return1):
+    global stop_speech_event
+    print("Function 1: starting")
+    for i in range(7):
+        time.sleep(1)
+        print(i)
+        if i == 5:
+            stop_speech_event.set()
 
+    val_return1.put(i)
+    return 1
 
-def func2():
-    print("func2: starting")
-    for i in range(10000000):
-        pass
+def Run_Parallel_Func(func1, func2, val_input1= [(0,0)]):
+    val_return1 = Queue()
+    func1_temp = Process(target=func1, args=(val_return1,))
+    func1_temp.start()
 
-    print("func2: finishing")
+    func2_temp = Process(target=func2)
+    func2_temp.start()
 
-def runInParallel(*fns):
-  proc = []
-  for fn in fns:
-    p = Process(target=fn)
-    p.start()
-    proc.append(p)
-  for p in proc:
-    p.join()
+    return_value = val_return1.get()
+    func2_temp.terminate()
 
-runInParallel(func1, func2)
+    return return_value
 
-
+if __name__ == "__main__":
+    return_value = Run_Parallel_Func(dummy_func, speech_moving, [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7), (4, 8)])
+    print("Return value:", return_value)

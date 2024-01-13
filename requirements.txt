@@ -9,6 +9,8 @@ opencv-python == 4.8.1.78
 mysql-connector-python == 8.0.33
 pygame == 2.5.2
 tensorboard
+playsound
+pydub
 # speechrecognition
 # pyaudio
 # pyttsx3

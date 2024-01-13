@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils.search_algorithm import search_func, search
 from utils.nlp import Tensorbot
-from utils.controller import PathFollowing2
+from utils.controller import PathFollowing2, Run_Parallel_Func
 from utils.conn_db import *
 # from utils.sim_client import PathFollowing2
 import ssl
@@ -70,7 +70,7 @@ async def predict(message: Message):
                 while current_point != target_point:
                     path_to_running = search_func.Astar_search(current_point, target_point, barrier_arr)
                     print("Path to running", path_to_running)
-                    check_return = PathFollowing2(path_to_running)
+                    check_return = Run_Parallel_Func(PathFollowing2, path_to_running)
                     print("Check return", check_return)
 
                     if len(check_return) >= 2:
