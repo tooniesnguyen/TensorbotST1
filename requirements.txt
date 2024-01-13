@@ -11,6 +11,7 @@ pygame == 2.5.2
 tensorboard
 playsound
 pydub
+
 # speechrecognition
 # pyaudio
 # pyttsx3

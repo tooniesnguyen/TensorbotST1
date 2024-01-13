@@ -1,19 +1,16 @@
 from multiprocessing import Process, Event, Queue
 import multiprocessing
-from sim_client import PathFollowing2
-from pydub import AudioSegment
-from pydub.playback import play
+from .sim_client import PathFollowing2
+from playsound import playsound
 import time
 
-stop_speech_event = Event()
+# stop_speech_event = Event()
 
-def speech_moving(dir_wav="/home/toonies/Learn/Tensorbot/data/speech.wav"):
-    while True:
-        sound = AudioSegment.from_file(dir_wav, format="wav")
-        play(sound)
-        print("Speech finished")
-        if stop_speech_event.is_set():
-            break
+def speech_moving(dir_wav="/home/toonies/Learn/Tensorbot/data/speechs/vi/hoanthanh.wav", mode = "finish"):
+    if mode == "finish":
+        return playsound("/home/toonies/Learn/Tensorbot/data/speechs/vi/hoanthanh.wav")
+    elif mode == "avoid":
+        return playsound("/home/toonies/Learn/Tensorbot/data/speechs/vi/tranhduong.wav")
 
 def dummy_func(val_return1):
     global stop_speech_event
@@ -41,5 +38,6 @@ def Run_Parallel_Func(func1, func2, val_input1= [(0,0)]):
     return return_value
 
 if __name__ == "__main__":
-    return_value = Run_Parallel_Func(dummy_func, speech_moving, [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7), (4, 8)])
-    print("Return value:", return_value)
+    # return_value = Run_Parallel_Func(dummy_func, speech_moving, [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7), (4, 8)])
+    # print("Return value:", return_value)
+    speech_moving()
