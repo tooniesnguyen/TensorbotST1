@@ -8,7 +8,7 @@ import numpy as np
 from .conn_db import *
 
 from utils.utils import speech_moving
-ROBOTINOIP = "192.168.0.101"
+ROBOTINOIP = "192.168.0.100"
 PARAMS = {'sid':'example_circle'}
 run = True
 
@@ -483,4 +483,6 @@ if __name__ == "__main__":
     # OriginPathFollow()
     # OriginPathFollow(path1,4)
     # backhome()
-    print("Task Finished")
+    # print("Task Finished")
+    arr = [(0, 63), (1, 63), (2, 63), (3, 63), (4, 63), (4, 64), (4, 65), (4, 66), (4, 67), (4, 68), (4, 69), (5, 69), (6, 69), (7, 69), (8, 69), (9, 69), (10, 69)]
+    PathFollowing2(arr)

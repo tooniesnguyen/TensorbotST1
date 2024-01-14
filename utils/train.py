@@ -75,7 +75,7 @@ def main():
     all_words, tags, _ =data_process.create_data()
     X_train, y_train = data_process.X_y_split()
     print("X_shape", X_train.shape)
-    num_epochs = 5000
+    num_epochs = 3000
     batch_size = 8
     learning_rate = 0.0001
     input_size = len(X_train[0])

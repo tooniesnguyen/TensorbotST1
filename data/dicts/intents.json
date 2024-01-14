@@ -99,36 +99,7 @@
       "tag": "name",
       "patterns": [
         "What is your name?",
-        "Your name?",
-        "May I know your name?",
-        "Could you tell me your name?",
-        "What should I call you?",
-        "Do you have a name?",
-        "Tell me your name",
-        "Who are you?",
-        "What do they call you?",
-        "Your name, please?",
-        "How can I address you?",
-        "What are you called?",
-        "Name, please?",
-        "I'd like to know your name",
-        "Can you introduce yourself?",
-        "What should I refer to you as?",
-        "Your name, if you don't mind?",
-        "Could you share your name with me?",
-        "Let me know your name",
-        "What goes by your name?",
-        "Who am I talking to?",
-        "May I ask who you are?",
-        "Who's behind the chat?",
-        "Tell me a bit about yourself",
-        "What should I know about you?",
-        "Can you provide some details about yourself?",
-        "Inform me about your identity",
-        "Let me in on your identity",
-        "Could you share some information about yourself?",
-        "May I know a bit more about you?",
-        "Who is Tensorbot?"
+        "Your name?"
       ],
       "responses": [
         "I go by the name Tensorbot.",
@@ -160,72 +131,6 @@
         "Tensorbot is here for you. What can I do?",
         "You've got Tensorbot on the other end. How can I assist you?",
         "Tensorbot here! Ready to chat and help you out."
-      ]
-    },
-    {
-      "tag": "time",
-      "patterns": [
-        "What time is it?",
-        "What time is it right now?",
-        "Tell me the current time.",
-        "Can you inform me of the time?",
-        "What's the time?",
-        "Do you know the time?",
-        "What is the current time?",
-        "Please tell me the time.",
-        "Could you let me know the time?",
-        "Inform me of the current time.",
-        "Do you have the time?",
-        "What's the current time?",
-        "Could you provide the current time?",
-        "Tell me what time it is.",
-        "Let me know the time, please.",
-        "Do you have the current time?",
-        "What's the time now?",
-        "Could you share the time with me?",
-        "Tell me the time at the moment.",
-        "What time is it now?",
-        "Let me know the current time.",
-        "Could you inform me about the time?",
-        "What's the current time now?",
-        "Tell me the time, please.",
-        "Inform me about the current time.",
-        "Do you know what time it is now?",
-        "What's the time currently?",
-        "Let me know the time right now.",
-        
-        "What is today's date?",
-        "What's today?",
-        "What's today? Which day is this today?",
-        "Which day is this today?",
-        "Tell me today's date.",
-        "Can you inform me about today's date?",
-        "What day is it today?",
-        "Which date is today?",
-        "Please tell me today's date.",
-        "Could you let me know today's date?",
-        "Inform me about today's date.",
-        "Do you know today's date?",
-        "What's the date today?",
-        "Could you provide today's date?",
-        "Tell me what today's date is.",
-        "Let me know today's date, please.",
-        "Do you know today's date?",
-        "What's today's date now?",
-        "Could you share today's date with me?",
-        "Tell me today's date at the moment.",
-        "What's today's date now?",
-        "Let me know today's date.",
-        "Could you inform me about today's date?",
-        "What's today's date now?",
-        "Tell me today's date, please.",
-        "Inform me about today's date.",
-        "Do you know today's date now?",
-        "What's today's date currently?",
-        "Let me know today's date right now."
-      ],
-      "responses": [
-        "The current time"
       ]
     },
     {
@@ -263,13 +168,7 @@
         "Let me search"
       ]
     },
-    {
-      "tag": "school",
-      "patterns": ["Introduction to the University of Technology and Education", "Introduction to UTE", "Can you introduce your school?"],
-      "responses": [
-        "This is the first university in Vietnam educating and training technical teachers for the whole country. Chronologically, HCMUTE has been renamed several times due to integration with other schools or its own promotion."
-      ]
-    },
+
     {
       "tag": "thanks",
       "patterns": [

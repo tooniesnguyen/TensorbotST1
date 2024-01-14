@@ -9,8 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from utils.search_algorithm import search_func, search
 from utils.nlp import Tensorbot
 from utils.conn_db import *
-# from utils.controller import PathFollowing2
-from utils.sim_client import PathFollowing2
+from utils.controller import PathFollowing2
+# from utils.sim_client import PathFollowing2
 from utils.utils import speech_moving
 import ssl
 import sys
