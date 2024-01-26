@@ -264,6 +264,45 @@
       "responses":[
         "Oke, let me help you", "Okay, follow me", "Tracking me"
       ]
+    },
+    {
+      "tag": "tour",
+      "patterns": [
+        "I am new to visiting the school for the first time",
+        "Can you recommend classrooms for me?",
+        "Can you introduce classrooms for me?",
+        "Can you give me a tour of the school?",
+        "I'm visiting the school for the first time",
+        "Which way to the classrooms?",
+        "Where can I find information about classrooms?",
+        "I'd like to explore the school",
+        "Where should I start my tour?",
+        "Can you guide me around the school?",
+        "I want to familiarize myself with the classrooms",
+        "Show me around the school, please",
+        "I'm here for a tour, what should I see first?",
+        "What's the best route for a school tour?",
+        "Tell me about the notable places in the school",
+        "I'd like to know more about the school facilities",
+        "Can you provide information about the school layout?",
+        "I need assistance navigating the school",
+        "Which areas are important for new visitors to see?",
+        "Can you recommend any interesting spots in the school?",
+        "Help me get oriented in the school environment",
+        "I want to explore the classrooms and facilities",
+        "Can you assist me in finding my way around the school?",
+        "I'm interested in taking a tour of the school",
+        "What should I check out during my school visit?",
+        "Can you show me the key locations in the school?",
+        "I'm curious about the school's layout and design",
+        "I need a guide for a tour of the school",
+        "Tell me about the highlights of the school",
+        "I'd like to see the important places in the school",
+        "Can you recommend any must-see areas in the school?"
+      ],
+      "responses":[
+        "Oke, let me help you", "Okay, follow me", "Tracking me"
+      ]
     }
   ]
 }

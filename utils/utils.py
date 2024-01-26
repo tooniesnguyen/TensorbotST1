@@ -46,6 +46,9 @@ def Run_Parallel_Func(func1, func2, val_input1= [(0,0)]):
 
     return return_value
 
+def tour_guide():
+    pass
+
 if __name__ == "__main__":
     # return_value = Run_Parallel_Func(dummy_func, speech_moving, [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7), (4, 8)])
     # print("Return value:", return_value)

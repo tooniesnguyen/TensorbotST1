@@ -16,7 +16,7 @@ from utils.nlp import Tensorbot
 from utils.conn_db import *
 from utils.controller import PathFollowing2
 # from utils.sim_client import PathFollowing2
-from utils.utils import speech_moving
+from utils.utils import *
 import ssl
 import sys
 import socket
@@ -103,7 +103,6 @@ async def predict(message: Message):
                 async def process_movement():
                     nonlocal current_point
 
-
                     speech_moving(mode = "start")
                     while current_point != target_point:
                         path_to_running = search_func.Astar_search(current_point, target_point, barrier_arr)
@@ -127,9 +126,8 @@ async def predict(message: Message):
         elif tag == "info":
             target = re.findall(PATTERN, text.lower())
             response = retrieval_info(target[0])
-        elif tag == "time":
-            current_time = datetime.now()
-            response = current_time.strftime("Day: %A, Date: %d/%m/%Y, Time: %H:%M")
+        elif tag == "tour":
+            tour_guide()
 
         return JSONResponse(content={"answer": response})
     
