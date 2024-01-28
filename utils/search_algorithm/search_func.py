@@ -164,7 +164,10 @@ def Astar_search(current_coor, target_coor, barrier_arr, rows = ROWS, show_mode 
 if __name__ == "__main__":
     barrier_from_txt = read_txt_file()
 
-    collect_barrier(reload_barr=True)
-    # simulation()
+    # collect_barrier(reload_barr=True)
+    simulation()
     # print(Astar_search([0,17], [5,28],barrier_from_txt))
     # print(WORK_DIR)
+
+    # Home: 5, 0
+    # E1304: 1, 27

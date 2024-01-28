@@ -14,8 +14,8 @@ from fastapi.openapi.docs import (
 from utils.search_algorithm import search_func, search
 from utils.nlp import Tensorbot
 from utils.conn_db import *
-from utils.controller import PathFollowing2
-# from utils.sim_client import PathFollowing2
+# from utils.controller import PathFollowing2
+from utils.sim_client import PathFollowing2
 from utils.utils import *
 import ssl
 import sys
@@ -34,7 +34,6 @@ ROOT = FILE.parents[0]
 WORK_DIR = os.path.dirname(ROOT)
 
 PATTERN = get_list_target()
-
 
 
 app = FastAPI(docs_url=None, redoc_url=None)
@@ -86,54 +85,80 @@ async def redoc_html():
 
 @app.post("/predict")
 async def predict(message: Message):
-    try:
-        global target_point, barrier_arr
-        text = message.message
-        text = re.sub(r'[^\w\s]', '',text)
-        response, tag = tensorbot.feed_back(text)
+    # try:
+    global target_point, barrier_arr
+    text = message.message
+    text = re.sub(r'[^\w\s]', '',text)
+    response, tag = tensorbot.feed_back(text)
 
-        if tag == "moving":
-            
-            current_point = retrieval_coordinates("tensorbot")
-            target = re.findall(PATTERN, text.lower())
-            if target:
-                target_point = retrieval_coordinates(target[0])
-                barrier_arr = search.read_txt_file()
+    if tag == "moving":
+        
+        current_point = retrieval_coordinates("tensorbot")
+        target = re.findall(PATTERN, text.lower())
+        if target:
+            target_point = retrieval_coordinates(target[0])
+            barrier_arr = search.read_txt_file()
 
-                async def process_movement():
-                    nonlocal current_point
+            async def process_movement():
+                nonlocal current_point
 
-                    speech_moving(mode = "start")
-                    while current_point != target_point:
-                        path_to_running = search_func.Astar_search(current_point, target_point, barrier_arr)
-                        speech_moving(mode = "found")
-                        print("Path to running", path_to_running)
-                        check_return = PathFollowing2(path_to_running)
-                        print("Check return", check_return)
+                speech_moving(mode = "start")
+                while current_point != target_point:
+                    path_to_running = search_func.Astar_search(current_point, target_point, barrier_arr)
+                    speech_moving(mode = "found")
+                    print("Path to running", path_to_running)
+                    check_return = PathFollowing2(path_to_running)
+                    print("Check return", check_return)
 
-                        if len(check_return) >= 2:
-                            barrier_arr.extend(barrier_i for barrier_i in check_return[1:] if barrier_i not in barrier_arr)
-                            print("Update barrier", len(barrier_arr))
+                    if len(check_return) >= 2:
+                        barrier_arr.extend(barrier_i for barrier_i in check_return[1:] if barrier_i not in barrier_arr)
+                        print("Update barrier", len(barrier_arr))
 
-                        current_point = retrieval_coordinates("tensorbot")
-                        print("Current point", current_point)
-                        print("Dieu khien to break", current_point == target_point)
-                        if current_point == target_point:
-                            speech_moving(mode = "finish")
+                    current_point = retrieval_coordinates("tensorbot")
+                    print("Current point", current_point)
+                    print("Dieu khien to break", current_point == target_point)
+                    if current_point == target_point:
+                        speech_moving(mode = "finish")
 
-                # Chạy coroutine mà không chờ đợi
-                asyncio.create_task(process_movement())
-        elif tag == "info":
-            target = re.findall(PATTERN, text.lower())
-            response = retrieval_info(target[0])
-        elif tag == "tour":
-            tour_guide()
-
-        return JSONResponse(content={"answer": response})
+            # Chạy coroutine mà không chờ đợi
+            asyncio.create_task(process_movement())
     
-    except:
-        response = "Sorry, I don't understand"
-        return JSONResponse(content={"answer": response})
+    elif tag == "info":
+        target = re.findall(PATTERN, text.lower())
+        response = retrieval_info(target[0])
+    elif tag == "tour":
+        
+        targets = ["E1302", "E1303", "E1304", "E1305", "E1306","E1311", "E1307", "E1310", "E1309"]
+        speech_moving(mode = "found")
+        for target in targets:
+            current_point = retrieval_coordinates("tensorbot")
+            target_point = retrieval_coordinates(target)
+            barrier_arr = search.read_txt_file()
+            
+            print("Target is ", target)
+            while current_point != target_point:
+                path_to_running = search_func.Astar_search(current_point, target_point, barrier_arr)
+                
+                print("Path to running", path_to_running)
+                check_return = PathFollowing2(path_to_running)
+                print("Check return", check_return)
+
+                if len(check_return) >= 2:
+                    barrier_arr.extend(barrier_i for barrier_i in check_return[1:] if barrier_i not in barrier_arr)
+                    print("Update barrier", len(barrier_arr))
+
+                current_point = retrieval_coordinates("tensorbot")
+                print("Current point", current_point)
+                print("Dieu khien to break", current_point == target_point)
+                if current_point == target_point:
+                    speech_moving(mode = "tour", target_vid=target)
+
+
+    return JSONResponse(content={"answer": response})
+    
+    # except:
+    #     response = "Sorry, I don't understand"
+    #     return JSONResponse(content={"answer": response})
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True, workers=Pool()._processes)

@@ -72,7 +72,7 @@ def update_target_info(cursor, target, new_info):
 # INSERT INTO target_dict (target, info) VALUES ('SCADA', 'SCADA stands for "Supervisory Control and Data Acquisition", and is an automation control and monitoring system widely used in industrial processes and facilities. Infrastructure.');
 if __name__ == "__main__":
     # print(get_list_target())
-    update_target_coordinates("Tensorbot", [0,63])
+    update_target_coordinates("E1304", [1, 27])
     # print(retrieval_info("E1310"))
     # update_target_info('PLC', 'PLC stands for "Programmable Logic Controller". This is an electronic device widely used in industrial automation to control and monitor manufacturing systems and processes. Here you will learn a lot about Siemens')
 
