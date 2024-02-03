@@ -16,28 +16,43 @@
 - [x] Design of Intelligent Algorithm
 - [x] User Interface designing
 
+## [MECHATRONICS PROJECT REPORT](./docs/report.pdf)
 ## Software
 - [Download here](https://drive.google.com/drive/folders/1QeQVKOQrqvYlFl_fmG-g97QUFa41ZTPt?usp=sharing)
 
 
-## Mechanical Design
- ( More details in our report )
+## Mechanical Design [More details in our report](./docs/report.pdf)
 
 ![image](./images/robotino.png)
 
 
-## Electrical and Electronic System
+## Electrical and Electronic System [More details in our report](./docs/report.pdf)
+
 
 ![image](./images/operation_diagram.png)
 ![image](./images/electrical_diagram.png)
 
-## Model and Control Algorithm Design of The System
+## Model and Control Algorithm Design of The System [More details in our report](./docs/report.pdf)
+
 
 ![image](./images/P2Psimu.png)
 ![image](./images/P2Ppos.png)
 
 
-## Design of Intelligent Algorithm
+## Design of Intelligent Algorithm [More details in our report](./docs/report.pdf)
+
+### Database
+![image](./images/database.jpg)
+
+### A-Star
+![image](./images/a_star.jpg)
+
+
+### Training Result
+![image](./images/gaph1.jpg)
+
+![image](./images/gaph2.jpg)
+
 
 
 ## User Interface designing
@@ -46,9 +61,12 @@
 
 
 ## References
+- https://youtube.com/playlist?list=PLpC3GniHRC0NSpHS_Y8AzRGS1mAb4zcHJ&si=G4dGPev_PCGBowcw
+
 - https://www.youtube.com/@CraigMaynard7/videos
 - https://doc.openrobotino.org/RobotinoFactory/help/en/
-
+- https://archive.nptel.ac.in/courses/112/106/112106298/
+- 
 
 ## Licence
     MIT License
