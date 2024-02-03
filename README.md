@@ -31,6 +31,13 @@
 ![image](./images/operation_diagram.png)
 ![image](./images/electrical_diagram.png)
 
+## Model and Control Algorithm Design of The System
+
+![image](./images/P2Psimu.png)
+![image](./images/P2Ppos.png)
+
+
+## Design of Intelligent Algorithm
 
 
 
