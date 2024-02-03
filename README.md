@@ -5,10 +5,10 @@
 
 
 ```bibtex
-  title = {Development Of a Mobile Service Robot}
-  advisor = {M.Sc. Vo Lam Chuong},
-  students = {Nguyen Ngoc Nhan, Nguyen Hai Hoang, Huynh Anh Duy}
-  year = {2023}
+title = {Development Of a Mobile Service Robot}
+advisor = {M.Sc. Vo Lam Chuong},
+students = {Nguyen Ngoc Nhan, Nguyen Hai Hoang, Huynh Anh Duy}
+year = {2023}
 ```
 ## To do task
 - [x] Mechanical Design
