@@ -1,6 +1,6 @@
 # TensorBot
 
-<br><img src="./images/download.jpg" width="200px" height="170px"> </br> 
+<img src="./images/download.jpg" width="200px" height="170px">
 
 
 ```bibtex
@@ -40,6 +40,9 @@
 ## Design of Intelligent Algorithm
 
 
+## User Interface designing
+
+![image](./images/gui.jpg)
 
 
 ## References
