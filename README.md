@@ -74,7 +74,6 @@ year = {2023}
 - https://www.youtube.com/@CraigMaynard7/videos
 - https://doc.openrobotino.org/RobotinoFactory/help/en/
 - https://archive.nptel.ac.in/courses/112/106/112106298/
-- 
 
 ## Licence
     MIT License
