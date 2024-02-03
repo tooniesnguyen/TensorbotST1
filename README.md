@@ -1,6 +1,6 @@
 # TensorBot
 
-![image](./images/download.jpg)
+<br><img src="./images/download.jpg" width="200px" height="170px"> </br> 
 
 
 ```bibtex
