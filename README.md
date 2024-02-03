@@ -1,6 +1,10 @@
 # TensorBot
 [![My Skills](https://skillicons.dev/icons?i=anaconda,docker,git,matlab,pytorch,fastapi,html,css,js,mysql,linux,vim,autocad)](https://skillicons.dev)
 
+## Overview
+- Mobile robots serve as directions, guidance and admission counseling for students from far away to visit the school
+- Our report: [Mechatronics_project_report.pdf](./docs/Mechatronics_project_report.pdf)
+
 <img src="./images/download.jpg" width="200px" height="170px">
 
 
@@ -17,30 +21,33 @@ year = {2023}
 - [x] Design of Intelligent Algorithm
 - [x] User Interface designing
 
-## [MECHATRONICS PROJECT REPORT](./docs/report.pdf)
+## [MECHATRONICS  REPORT](./docs/Mechatronics_project_report.pdf)
+
 ## Software
 - [Download here](https://drive.google.com/drive/folders/1QeQVKOQrqvYlFl_fmG-g97QUFa41ZTPt?usp=sharing)
 
 
-## Mechanical Design [More details in our report](./docs/report.pdf)
+## Mechanical Design [(details ...)](./docs/Mechatronics_project_report.pdf)
+
 
 ![image](./images/robotino.png)
 
 
-## Electrical and Electronic System [More details in our report](./docs/report.pdf)
+## Electrical and Electronic System [(details ...)](./docs/Mechatronics_project_report.pdf)
 
 
 ![image](./images/operation_diagram.png)
 ![image](./images/electrical_diagram.png)
 
-## Model and Control Algorithm Design of The System [More details in our report](./docs/report.pdf)
+## Model and Control Algorithm Design of The System[(details ...)](./docs/Mechatronics_project_report.pdf)
 
 
 ![image](./images/P2Psimu.png)
 ![image](./images/P2Ppos.png)
 
 
-## Design of Intelligent Algorithm [More details in our report](./docs/report.pdf)
+## Design of Intelligent Algorithm [(details ...)](./docs/Mechatronics_project_report.pdf)
+
 
 ### Database
 ![image](./images/database.jpg)
@@ -49,7 +56,7 @@ year = {2023}
 ![image](./images/a_star.jpg)
 
 
-### Training Result
+### Chatbot training results
 ![image](./images/gaph1.jpg)
 
 ![image](./images/gaph2.jpg)
