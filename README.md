@@ -1,4 +1,5 @@
 # TensorBot
+[![My Skills](https://skillicons.dev/icons?i=anaconda,docker,git,matlab,pytorch,fastapi,html,css,js,mysql,linux,vim,autocad)](https://skillicons.dev)
 
 <img src="./images/download.jpg" width="200px" height="170px">
 
