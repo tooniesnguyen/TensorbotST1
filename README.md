@@ -20,6 +20,20 @@
 - [Download here](https://drive.google.com/drive/folders/1QeQVKOQrqvYlFl_fmG-g97QUFa41ZTPt?usp=sharing)
 
 
+## Mechanical Design
+ ( More details in our report )
+
+![image](./images/robotino.png)
+
+
+## Electrical and Electronic System
+
+![image](./images/operation_diagram.png)
+![image](./images/electrical_diagram.png)
+
+
+
+
 
 ## References
 - https://www.youtube.com/@CraigMaynard7/videos
