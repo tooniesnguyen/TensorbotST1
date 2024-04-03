@@ -14,6 +14,9 @@ advisor = {M.Sc. Vo Lam Chuong},
 students = {Nguyen Ngoc Nhan, Nguyen Hai Hoang, Huynh Anh Duy}
 year = {2023}
 ```
+
+
+## [Tensorbot NLP System](https://github.com/tooniesnguyen/Tensorbot_NLP_System)
 ## To do task
 - [x] Mechanical Design
 - [x] Electrical and Electronic System
