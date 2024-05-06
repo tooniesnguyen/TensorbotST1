@@ -66,7 +66,7 @@ year = {2023}
 
 
 
-## User Interface designing
+## User Interface Designing
 
 ![image](./images/gui.jpg)
 
